@@ -3,7 +3,7 @@ from .import views
 
 urlpatterns = [
     #department management
-    path('', views.getRoutes, name="routes"),
+    #path('', views.getRoutes, name="routes"),
     path('departments/',views.getDepartments, name="departments"),
     path('departments/<str:pk>/',views.getDepartment, name="department"),
     
