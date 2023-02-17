@@ -9,9 +9,16 @@ urlpatterns = [
     
 
     #employee management
+    #path('', views.getRoutes, name="routes")
+    path('employees/',views.getEmployees, name="employees"),
+    path('employees/<str:pk>/',views.getEmployee, name="employee"),
   
 
     #document management
+    #path('', views.getRoutes, name="routes")
+    path('employees/',views.getEmployees, name="employees"),
+    path('employees/<str:pk>/',views.getEmployee, name="employee"),
+    
 
     #contract management
 

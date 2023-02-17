@@ -19,7 +19,7 @@ class Department(models.Model):
 
 class Employee(PolymorphicModel):
     STATUS_CHOICES = (('celibat', 'Célibataire'), ('marie', 'Marié(e)'), ('divorce',
-                                                                          'Divorcé(e)'), ('veuf ', 'Veuf(ve)'), ('concubin', 'Concubinage'))
+                        'Divorcé(e)'), ('veuf ', 'Veuf(ve)'), ('concubin', 'Concubinage'))
 
     GENDER_CHOICES = (('male', 'Masculin'), ('female',
                       'Féminin'), ('other', 'Non précisé'))
@@ -27,7 +27,7 @@ class Employee(PolymorphicModel):
     employeeId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
     employeeMat = models.CharField(
-        max_length=150, blank=False, null=False, editable=False, unique=True)
+        max_length=150, blank=False, null=False, editable=False, unique=False)
     department = models.ForeignKey(
         Department, blank=False, null=False, on_delete=models.CASCADE)
     superieur = models.ForeignKey(
@@ -37,9 +37,9 @@ class Employee(PolymorphicModel):
     birthdate = models.DateField(blank=True, null=True)
     birthplace = models.CharField(max_length=150, blank=True, null=True)
     gender = models.CharField(
-        max_length=20, blank=True, null=True, choices=STATUS_CHOICES, default='celibat')
+        max_length=20, blank=True, null=True, choices= GENDER_CHOICES, default='Non précisé')
     status = models.CharField(
-        max_length=255, blank=True, null=True, choices=GENDER_CHOICES, default='Non précisé')
+        max_length=255, blank=True, null=True, choices= STATUS_CHOICES, default='celibat')
     email = models.CharField(max_length=255, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
@@ -58,7 +58,7 @@ class Employee(PolymorphicModel):
     updateDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.employeeMat)
+        return str(self.firstname)
 
 class Manager(Employee):
     pass
