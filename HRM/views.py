@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Department, Document, Employee
-from .serializers import DepartmentSerializer, DocumentSerializer, EmployeeSerializer
+from .models import Contract, Department, Document, Employee
+from .serializers import ContractSerializer, DepartmentSerializer, DocumentSerializer, EmployeeSerializer
 
 
 # ============== Departemnet management ====================
@@ -51,3 +51,19 @@ def getDocument(request, pk):
     document = Document.objects.get(employeeId=pk)
     serializer = DocumentSerializer(document, many=False)
     return Response(serializer.data)
+
+
+# ============== Contract management ====================
+# get all contracts
+@api_view(['GET'])
+def getContracts(request):
+    contracts = Contract.objects.all()
+    serializer = ContractSerializer(contracts, many=True)
+    return Response(serializer.data)
+
+#get a single document
+@api_view(['GET'])
+def getContract(request, pk):
+    document = Contract.objects.get(employeeId=pk)
+    serializer = ContractSerializer(Contract, many=False)
+    return Response(serializer.data)    

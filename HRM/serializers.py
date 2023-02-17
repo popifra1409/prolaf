@@ -21,3 +21,7 @@ class ContractSerializer(ModelSerializer):
         model = Contract
         fields = '__all__'                        
 
+class ContractSerializer(ModelSerializer):
+    class Meta:
+        model = Contract
+        fields = '__all__'                                
