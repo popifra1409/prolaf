@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Contract, Department, Employee, Document
+from .models import Agent, Contract, Department, Employee, Document
 
 class DepartmentSerializer(ModelSerializer):
     class Meta:
@@ -19,9 +19,9 @@ class DocumentSerializer(ModelSerializer):
 class ContractSerializer(ModelSerializer):
     class Meta:
         model = Contract
-        fields = '__all__'                        
+        fields = '__all__'                         
 
-class ContractSerializer(ModelSerializer):
+class AgentSerializer(ModelSerializer):
     class Meta:
-        model = Contract
-        fields = '__all__'                                
+        model = Agent
+        fields = '__all__'                                        
