@@ -48,7 +48,7 @@ def getDocuments(request):
 #get a single document
 @api_view(['GET'])
 def getDocument(request, pk):
-    document = Document.objects.get(employeeId=pk)
+    document = Document.objects.get(documentId=pk)
     serializer = DocumentSerializer(document, many=False)
     return Response(serializer.data)
 
@@ -65,7 +65,7 @@ def getContracts(request):
 @api_view(['GET'])
 def getContract(request, pk):
     contract  = Contract.objects.get(contractId=pk)
-    serializer = ContractSerializer(Contract, many=False)
+    serializer = ContractSerializer(contract, many=False)
     return Response(serializer.data)    
 
 
@@ -81,5 +81,5 @@ def getAgents(request):
 @api_view(['GET'])
 def getAgent(request, pk):
     agent = Agent.objects.get(agentId=pk)
-    serializer = AgentSerializer(Agent, many=False)
+    serializer = AgentSerializer(agent, many=False)
     return Response(serializer.data)        
