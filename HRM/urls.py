@@ -16,8 +16,8 @@ urlpatterns = [
 
     #document management
     #path('', views.getRoutes, name="routes")
-    path('employees/',views.getEmployees, name="employees"),
-    path('employees/<str:pk>/',views.getEmployee, name="employee"),
+    path('documents/',views.getDocuments, name="documents"),
+    path('documents/<str:pk>/',views.getDocument, name="document"),
 
 
     #contract management
