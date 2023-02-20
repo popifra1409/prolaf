@@ -19,7 +19,7 @@ class DocumentSerializer(ModelSerializer):
 class ContractSerializer(ModelSerializer):
     class Meta:
         model = Contract
-        fields = '__all__'                         
+        fields = '__all__'                          
 
 class AgentSerializer(ModelSerializer):
     class Meta:
