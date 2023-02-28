@@ -1,6 +1,5 @@
 import uuid
 from django.db import models
-from polymorphic.models import PolymorphicModel
 
 class Department(models.Model):
     departmentId = models.UUIDField(
@@ -16,13 +15,12 @@ class Department(models.Model):
     def __str__(self):
         return str(self.dept_name)
 
+class Employee(models.Model):
+    STATUS_CHOICES = (('single', 'Single'), ('married', 'Married'), ('divorce',
+                        'Divorce'), ('widower ', 'Widower'), ('partner', 'Partner'))
 
-class Employee(PolymorphicModel):
-    STATUS_CHOICES = (('celibat', 'Célibataire'), ('marie', 'Marié(e)'), ('divorce',
-                        'Divorcé(e)'), ('veuf ', 'Veuf(ve)'), ('concubin', 'Concubinage'))
-
-    GENDER_CHOICES = (('male', 'Masculin'), ('female',
-                      'Féminin'), ('other', 'Non précisé'))
+    GENDER_CHOICES = (('male', 'Male'), ('female',
+                      'Female'), ('other', 'Non precised'))
 
     employeeId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
@@ -30,8 +28,6 @@ class Employee(PolymorphicModel):
         max_length=150, blank=False, null=False, editable=False, unique=False)
     department = models.ForeignKey(
         Department, blank=False, null=False, on_delete=models.CASCADE)
-    superieur = models.ForeignKey(
-        "self", related_name="supérieur", null=True, blank=True, on_delete=models.SET_NULL)
     firstname = models.CharField(max_length=150, blank=True, null=True)
     lastname = models.CharField(max_length=150, blank=True, null=True)
     birthdate = models.DateField(blank=True, null=True)
@@ -59,26 +55,33 @@ class Employee(PolymorphicModel):
 
     def __str__(self):
         return str(self.firstname)
-
-class Manager(Employee):
-    pass
+    
+    class Meta:
+        abstract = True
 
 class Supervisor(Employee):
     pass
 
-class Accountant(Employee):
-    pass
+class Manager(Employee):
+    manager = models.ForeignKey(Supervisor, related_name="manager", null=True, blank=True, on_delete=models.SET_NULL)
 
+class Accountant(Employee):
+    manager = models.ForeignKey(Supervisor, related_name="accountant", null=True, blank=True, on_delete=models.SET_NULL)
 
 class Worker(Employee):
-    pass
-
+    manager = models.ForeignKey(Supervisor, related_name="worker", null=True, blank=True, on_delete=models.SET_NULL)
 
 class Document(models.Model):
     documentId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
-    employee = models.OneToOneField(
-        Employee, blank=False, null=False, on_delete=models.CASCADE)
+    supervisor = models.OneToOneField(
+        Supervisor, blank=False, null=False, on_delete=models.CASCADE)
+    manager = models.OneToOneField(
+        Manager, blank=False, null=False, on_delete=models.CASCADE)
+    accountant = models.OneToOneField(
+        Accountant, blank=False, null=False, on_delete=models.CASCADE)
+    worker = models.OneToOneField(
+        Worker, blank=False, null=False, on_delete=models.CASCADE)
     numCni = models.CharField(
         max_length=100, blank=True, null=True, unique=True)
     cniupload = models.FileField(null=False)
@@ -93,7 +96,7 @@ class Document(models.Model):
         return str(self.numCni)
 
 
-class Agent(PolymorphicModel):
+class Agent(models.Model):
     agentId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
     firstname = models.CharField(max_length=255, blank=True, null=True)
@@ -110,6 +113,9 @@ class Agent(PolymorphicModel):
 
     def __str__(self):
         return str(self.firstname)
+    
+    class Meta:
+        abstract = True
 
 class Client(Agent):
     pass
@@ -117,30 +123,37 @@ class Client(Agent):
 class Supplier(Agent):
     pass
 
-class Contract(PolymorphicModel):
+class Contract(models.Model):
     contractId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
-    employee = models.OneToOneField(
-        Employee, blank=True, null=True, on_delete=models.CASCADE)
-    agent = models.OneToOneField(
-        Agent, blank=True, null=True, on_delete=models.CASCADE)
     contract_no = models.CharField(max_length=255, blank=True, null=True)
     dateofcreation = models.DateField(max_length=255, blank=True, null=True)
     duration = models.DateField(max_length=255, blank=True, null=True)
     formofcontract = models.CharField(max_length=255, blank=True, null=True)
     contractupload = models.FileField(
-        upload_to="ContractFile/contract.pdf", blank=True, null=True)
+        upload_to="", blank=True, null=True)
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.contract_no)
+    
+    class Meta:
+        abstract = True
 
-class Employee_cont(Contract):
-    pass
+class Internal(Contract):
+    supervisor = models.OneToOneField(
+        Supervisor, blank=False, null=False, on_delete=models.CASCADE)
+    manager = models.OneToOneField(
+        Manager, blank=False, null=False, on_delete=models.CASCADE)
+    accountant = models.OneToOneField(
+        Accountant, blank=False, null=False, on_delete=models.CASCADE)
+    worker = models.OneToOneField(
+        Worker, blank=False, null=False, on_delete=models.CASCADE)
 
-class Supplier_cont(Contract):
-    pass
+class External(Contract):
+    client = models.OneToOneField(
+        Client, blank=False, null=False, on_delete=models.CASCADE)
+    supplier = models.OneToOneField(
+        Supplier, blank=False, null=False, on_delete=models.CASCADE)
 
-class Client_cont(Contract):
-    pass
