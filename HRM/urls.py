@@ -8,27 +8,9 @@ urlpatterns = [
     path('departments/<str:pk>/',views.getDepartment, name="department"),
     
 
-    #employee management
+    #manager management
     #path('', views.getRoutes, name="routes")
-    path('employees/',views.getEmployees, name="employees"),
-    path('employees/<str:pk>/',views.getEmployee, name="employee"),
-  
-
-    #document management
-    #path('', views.getRoutes, name="routes")
-    path('documents/',views.getDocuments, name="documents"),
-    path('documents/<str:pk>/',views.getDocument, name="document"),
-
-
-    #contract management
-    #path('', views.getRoutes, name="routes")
-    path('contracts/',views.getContracts, name="contracts"),
-    path('contracts/<str:pk>/',views.getContract, name="contract"),
-
-
-    #agents management
-    #path('', views.getRoutes, name="routes")
-    path('agents/',views.getAgents, name="agents"),
-    path('agents/<str:pk>/',views.getAgent, name="agent"),
+    path('employees/',views.getEmployees, name="managers"),
+    path('employees/<str:pk>/',views.getEmployee, name="manager"),
  
 ]

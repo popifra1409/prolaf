@@ -1,11 +1,11 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Agent, Contract, Department, Document, Employee
-from .serializers import AgentSerializer, ContractSerializer, DepartmentSerializer, DocumentSerializer, EmployeeSerializer
+from .models import Department, Manager
+from .serializers import DepartmentSerializer, ManagerSerializer
 
 
-# ============== Departemnet management ====================
+# ============== Departement management ====================
 # get all departements
 @api_view(['GET'])
 def getDepartments(request):
@@ -22,64 +22,19 @@ def getDepartment(request, pk):
 
 
 # ============== Employee management ====================
-# get all employees
+# get all managers
 @api_view(['GET'])
 def getEmployees(request):
-    employees = Employee.objects.all()
-    serializer = EmployeeSerializer(employees, many=True)
+    employees = Manager.objects.all()
+    serializer = ManagerSerializer(employees, many=True)
     return Response(serializer.data)
 
-#get a single employee
+#get a single manager
 @api_view(['GET'])
 def getEmployee(request, pk):
-    employee = Employee.objects.get(employeeId=pk)
-    serializer = EmployeeSerializer(employee, many=False)
+    employee = Manager.objects.get(employeeId=pk)
+    serializer = ManagerSerializer(employee, many=False)
     return Response(serializer.data)
 
 
 # ============== Document management ====================
-# get all documents
-@api_view(['GET'])
-def getDocuments(request):
-    documents = Document.objects.all()
-    serializer = DocumentSerializer(documents, many=True)
-    return Response(serializer.data)
-
-#get a single document
-@api_view(['GET'])
-def getDocument(request, pk):
-    document = Document.objects.get(documentId=pk)
-    serializer = DocumentSerializer(document, many=False)
-    return Response(serializer.data)
-
-
-# ============== Contract management ====================
-# get all contracts
-@api_view(['GET'])
-def getContracts(request):
-    contracts = Contract.objects.all()
-    serializer = ContractSerializer(contracts, many=True)
-    return Response(serializer.data)
-
-#get a single contract
-@api_view(['GET'])
-def getContract(request, pk):
-    contract  = Contract.objects.get(contractId=pk)
-    serializer = ContractSerializer(contract, many=False)
-    return Response(serializer.data)    
-
-
-# ============== Agents management ====================
-# get all agents
-@api_view(['GET'])
-def getAgents(request):
-    agents = Agent.objects.all()
-    serializer = AgentSerializer(agents, many=True)
-    return Response(serializer.data)
-
-#get a single agent
-@api_view(['GET'])
-def getAgent(request, pk):
-    agent = Agent.objects.get(agentId=pk)
-    serializer = AgentSerializer(agent, many=False)
-    return Response(serializer.data)        
