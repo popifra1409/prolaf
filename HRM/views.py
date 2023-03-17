@@ -20,6 +20,39 @@ def getDepartment(request, pk):
     serializer = DepartmentSerializer(departement, many=False)
     return Response(serializer.data)
 
+#Update a single departement
+@api_view(['PUT'])
+def updateDepartment(request, pk):
+    data = request.data
+    department = Department.objects.get(departmentId=pk)
+    serializer = DepartmentSerializer(instance=department, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single departement
+@api_view(['POST'])
+def createDepartment(request, parentid):
+    data = request.data
+    department = Department.objects.get(departmentId=parentid)
+    department = Department.objects.create(
+        dept_name=data['dept_name'],
+        dept_parent= department,
+        dept_description=data['dept_description'],
+        dept_number=data['dept_number']
+        
+    )
+    serializer = DepartmentSerializer(department, many=False)
+    return Response(serializer.data)  
+
+#delete a single departement
+@api_view(['DELETE'])
+def deleteDepartment(request, pk):
+    department = Department.objects.get(departmentId=pk)
+    department.delete()
+    return Response('Department was deleted!')  
 
 # ============== Employee management ====================
 # get all managers
