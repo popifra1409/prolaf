@@ -22,10 +22,15 @@ class Employee(models.Model):
     GENDER_CHOICES = (('male', 'Male'), ('female',
                       'Female'), ('other', 'Non precised'))
 
+    EMPLOYEE_CHOICES = (('supervisor', 'SUPERVISOR'), ('manager', 'MANAGER'), ('accountant',
+                        'ACCOUNTANT'), ('worker ', 'WORKER'))                  
+
     employeeId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
     employeeMat = models.CharField(
         max_length=150, blank=False, null=False, editable=False, unique=False)
+    #supervisor = models.ForeignKey(
+        #"self", related_name="Supervisor",  null=True, blank=True, on_delete=models.SET_NULL)    
     department = models.ForeignKey(
         Department, blank=False, null=False, on_delete=models.CASCADE)
     firstname = models.CharField(max_length=150, blank=True, null=True)
@@ -50,38 +55,21 @@ class Employee(models.Model):
     resourcecontact = models.CharField(max_length=20, blank=True, null=True)
     resourcename = models.CharField(max_length=255, blank=True, null=True)
     isChiefOfDepartment = models.BooleanField(max_length=5, default=False)
+    typeofemployee = models.CharField(
+        max_length=255, blank=True, null=True, choices= EMPLOYEE_CHOICES, default='WORKER')
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.firstname)
     
-    class Meta:
-        abstract = True
-
-class Supervisor(Employee):
-    pass
-
-class Manager(Employee):
-    manager = models.ForeignKey(Supervisor, related_name="manager", null=True, blank=True, on_delete=models.SET_NULL)
-
-class Accountant(Employee):
-    manager = models.ForeignKey(Supervisor, related_name="accountant", null=True, blank=True, on_delete=models.SET_NULL)
-
-class Worker(Employee):
-    manager = models.ForeignKey(Supervisor, related_name="worker", null=True, blank=True, on_delete=models.SET_NULL)
+    
 
 class Document(models.Model):
     documentId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
-    supervisor = models.OneToOneField(
-        Supervisor, blank=False, null=False, on_delete=models.CASCADE)
-    manager = models.OneToOneField(
-        Manager, blank=False, null=False, on_delete=models.CASCADE)
-    accountant = models.OneToOneField(
-        Accountant, blank=False, null=False, on_delete=models.CASCADE)
-    worker = models.OneToOneField(
-        Worker, blank=False, null=False, on_delete=models.CASCADE)
+    employee = models.OneToOneField(
+        Employee, blank=False, null=False, on_delete=models.CASCADE)
     numCni = models.CharField(
         max_length=100, blank=True, null=True, unique=True)
     cniupload = models.FileField(null=False)
@@ -137,19 +125,14 @@ class Contract(models.Model):
 
     def __str__(self):
         return str(self.contract_no)
-    
+
     class Meta:
         abstract = True
 
 class Internal(Contract):
-    supervisor = models.OneToOneField(
-        Supervisor, blank=False, null=False, on_delete=models.CASCADE)
-    manager = models.OneToOneField(
-        Manager, blank=False, null=False, on_delete=models.CASCADE)
-    accountant = models.OneToOneField(
-        Accountant, blank=False, null=False, on_delete=models.CASCADE)
-    worker = models.OneToOneField(
-        Worker, blank=False, null=False, on_delete=models.CASCADE)
+    employee = models.OneToOneField(
+        Employee, blank=False, null=False, on_delete=models.CASCADE)          
+    
 
 class External(Contract):
     client = models.OneToOneField(

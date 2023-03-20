@@ -1,30 +1,16 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Client, Supplier, Internal, External, Department, Supervisor, Manager, Accountant,Worker, Document
+from .models import Client, Supplier, Internal, External,Employee, Department, Document
 
 class DepartmentSerializer(ModelSerializer):
     class Meta:
         model = Department
         fields = '__all__'
 
-class SupervisorSerializer(ModelSerializer):
+class EmployeeSerializer(ModelSerializer):
     class Meta:
-        model = Supervisor
-        fields = '__all__'       
+        model = Employee
+        fields = '__all__'        
 
-class ManagerSerializer(ModelSerializer):
-    class Meta:
-        model = Manager
-        fields = '__all__'   
-
-class AccountantSerializer(ModelSerializer):
-    class Meta:
-        model = Accountant
-        fields = '__all__' 
-
-class WorkerSerializer(ModelSerializer):
-    class Meta:
-        model = Worker
-        fields = '__all__'            
 
 class DocumentSerializer(ModelSerializer):
     class Meta:

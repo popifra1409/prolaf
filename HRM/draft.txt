@@ -1,0 +1,63 @@
+employee abstract class
+
+class Meta:
+        abstract = True
+
+class Supervisor(Employee):
+    pass
+
+class Manager(Employee):
+    manager = models.ForeignKey(Supervisor, related_name="manager", null=True, blank=True, on_delete=models.SET_NULL)
+
+    def save(self, *args, **kwargs):
+        super(Manager, self).save(*args, **kwargs)
+
+class Accountant(Employee):
+    manager = models.ForeignKey(Supervisor, related_name="accountant", null=True, blank=True, on_delete=models.SET_NULL)
+
+    def save(self, *args, **kwargs):
+        super(Accountant, self).save(*args, **kwargs)
+
+
+class Worker(Employee):
+    manager = models.ForeignKey(Supervisor, related_name="worker", null=True, blank=True, on_delete=models.SET_NULL)
+
+    def save(self, *args, **kwargs):
+        super(Worker, self).save(*args, **kwargs)
+
+        employee serializer
+
+        class SupervisorSerializer(ModelSerializer):
+    class Meta:
+        model = Supervisor
+        fields = '__all__'       
+
+class ManagerSerializer(ModelSerializer):
+    class Meta:
+        model = Manager
+        fields = '__all__'   
+
+class AccountantSerializer(ModelSerializer):
+    class Meta:
+        model = Accountant
+        fields = '__all__' 
+
+class WorkerSerializer(ModelSerializer):
+    class Meta:
+        model = Worker
+        fields = '__all__'      
+
+        employee contracts
+
+        class Meta:
+        abstract = True
+
+class Internal(Contract):
+    supervisor = models.OneToOneField(
+        Supervisor, blank=False, null=False, on_delete=models.CASCADE)
+    manager = models.OneToOneField(
+        Manager, blank=False, null=False, on_delete=models.CASCADE)
+    accountant = models.OneToOneField(
+        Accountant, blank=False, null=False, on_delete=models.CASCADE)
+    worker = models.OneToOneField(
+        Worker, blank=False, null=False, on_delete=models.CASCADE)      

@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Department, Manager
-from .serializers import DepartmentSerializer, ManagerSerializer
+from .models import Department, Employee
+from .serializers import DepartmentSerializer, EmployeeSerializer
 
 
 # ============== Departement management ====================
@@ -55,19 +55,71 @@ def deleteDepartment(request, pk):
     return Response('Department was deleted!')  
 
 # ============== Employee management ====================
-# get all managers
+# get all employee
 @api_view(['GET'])
 def getEmployees(request):
-    employees = Manager.objects.all()
-    serializer = ManagerSerializer(employees, many=True)
+    employees = Employee.objects.all()
+    serializer = EmployeeSerializer(employees, many=True)
     return Response(serializer.data)
 
-#get a single manager
+#get a single employee
 @api_view(['GET'])
 def getEmployee(request, pk):
-    employee = Manager.objects.get(employeeId=pk)
-    serializer = ManagerSerializer(employee, many=False)
+    employee = Employee.objects.get(employeeId=pk)
+    serializer = EmployeeSerializer(employee, many=False)
     return Response(serializer.data)
 
+  #Update a single employee
+@api_view(['PUT'])
+def updateEmployee(request, pk):
+    data = request.data
+    employee = Employee.objects.get(employeeId=pk)
+    serializer = EmployeeSerializer(instance=employee, data=data)
 
-# ============== Document management ====================
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+ #create a single employee
+@api_view(['POST'])
+def createEmployee(request, parentid):
+    data = request.data
+    department = Department.objects.get(departmentId=parentid)
+    employee = Employee.objects.create(
+        employeeMat=data['employeeMat'],
+        department=department,
+        firstname=data['firstname'],
+        lastname=data['lastname'],
+        birthdate=data['birthdate'],
+        birthplace=data['birthplace'],
+        gender=data['gender'],
+        status=data['status'],
+        email=data['email'],
+        address=data['address'],
+        phone=data['phone'],
+        photo=data['photo'],
+        function=data['function'],
+        hiringdate=data['hiringdate'],
+        seniority=data['seniority'],
+        salary=data['salary'],
+        whatsappnumber=data['whatsappnumber'],
+        facebooklink=data['facebooklink'],
+        resourcecontact=data['resourcecontact'],
+        resourcename=data['resourcename'],
+        isChiefOfDepartment=data['isChiefOfDepartment'],
+        typeofemployee=data['typeofemployee']
+        
+    )
+    serializer = EmployeeSerializer(employee, many=False)
+    return Response(serializer.data)  
+
+#delete a single employee
+@api_view(['DELETE'])
+def deleteEmployee(request, pk):
+    employee = Employee.objects.get(employeeId=pk)
+    employee.delete()
+    return Response('Employee was deleted!')       
+
+
+# ============== Document management ==================== 
