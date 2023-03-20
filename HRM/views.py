@@ -36,10 +36,10 @@ def updateDepartment(request, pk):
 @api_view(['POST'])
 def createDepartment(request, parentid):
     data = request.data
-    department = Department.objects.get(departmentId=parentid)
+    department_parent = Department.objects.get(departmentId=parentid)
     department = Department.objects.create(
         dept_name=data['dept_name'],
-        dept_parent= department,
+        dept_parent= department_parent,
         dept_description=data['dept_description'],
         dept_number=data['dept_number']
         
