@@ -17,4 +17,13 @@ urlpatterns = [
     path('employees/<str:parentid>/create/',views.createEmployee, name="create-employee"),
     path('employees/<str:pk>/',views.getEmployee, name="employee"),
  
+
+
+ #document management
+    path('documents/',views.getDocuments, name="documents"),
+    #path('documents/<str:pk>/update/',views.updateDocument, name="update-document"),
+    #path('documents/<str:pk>/delete/',views.deleteDocument, name="delete-document"),
+    #path('documents/<str:parentid>/create/',views.createDocument, name="create-document"),
+    path('documents/<str:pk>/',views.getDocument, name="document"),
+ 
 ]

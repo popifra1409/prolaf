@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Department, Employee
-from .serializers import DepartmentSerializer, EmployeeSerializer
+from .models import Department, Employee, Document
+from .serializers import DepartmentSerializer, EmployeeSerializer, DocumentSerializer
 
 
 # ============== Departement management ====================
@@ -123,3 +123,16 @@ def deleteEmployee(request, pk):
 
 
 # ============== Document management ==================== 
+# get all documents
+@api_view(['GET'])
+def getDocuments(request):
+    documents = Document.objects.all()
+    serializer = DocumentSerializer(documents, many=True)
+    return Response(serializer.data)
+
+#get a single document
+@api_view(['GET'])
+def getDocument(request, pk):
+    document = Document.objects.get(documentId=pk)
+    serializer = DocumentSerializer(document, many=False)
+    return Response(serializer.data)
