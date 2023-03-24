@@ -29,10 +29,10 @@ class Employee(models.Model):
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
     employeeMat = models.CharField(
         max_length=150, blank=False, null=False, editable=False, unique=False)
-    #supervisor = models.ForeignKey(
-        #"self", related_name="Supervisor",  null=True, blank=True, on_delete=models.SET_NULL)    
     department = models.ForeignKey(
         Department, blank=False, null=False, on_delete=models.CASCADE)
+    supervisor = models.ForeignKey(
+        "self", related_name="Supervisor",  null=True, blank=True, on_delete=models.SET_NULL)    
     firstname = models.CharField(max_length=150, blank=True, null=True)
     lastname = models.CharField(max_length=150, blank=True, null=True)
     birthdate = models.DateField(blank=True, null=True)
@@ -85,6 +85,10 @@ class Document(models.Model):
 
 
 class Agent(models.Model):
+
+    AGENT_CHOICES = (('client', 'Client'), ('supplier',
+                      'Supplier'))
+
     agentId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
     firstname = models.CharField(max_length=255, blank=True, null=True)
@@ -96,20 +100,22 @@ class Agent(models.Model):
     niu = models.CharField(max_length=255, blank=True, null=True)
     observation = models.CharField(max_length=255, blank=True, null=True)
     bankaccount = models.CharField(max_length=255, blank=True, null=True)
+    agent = models.CharField(
+        max_length=20, blank=True, null=True, choices= AGENT_CHOICES, default='supplier')
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return str(self.firstname)
     
-    class Meta:
+    """ class Meta:
         abstract = True
 
 class Client(Agent):
     pass
 
 class Supplier(Agent):
-    pass
+    pass """
 
 class Contract(models.Model):
     contractId = models.UUIDField(
@@ -135,8 +141,7 @@ class Internal(Contract):
     
 
 class External(Contract):
-    client = models.OneToOneField(
-        Client, blank=False, null=False, on_delete=models.CASCADE)
-    supplier = models.OneToOneField(
-        Supplier, blank=False, null=False, on_delete=models.CASCADE)
+    agent = models.OneToOneField(
+        Agent, blank=False, null=False, on_delete=models.CASCADE, default=uuid.uuid4)
+    
 

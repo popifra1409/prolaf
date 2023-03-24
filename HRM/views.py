@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Department, Employee, Document
-from .serializers import DepartmentSerializer, EmployeeSerializer, DocumentSerializer
+from .models import Department, Employee, Document, Internal, External, Agent
+from .serializers import DepartmentSerializer, EmployeeSerializer, DocumentSerializer, InternalSerializer, ExternalSerializer, AgentSerializer
 
 
 # ============== Departement management ====================
@@ -83,12 +83,14 @@ def updateEmployee(request, pk):
 
  #create a single employee
 @api_view(['POST'])
-def createEmployee(request, parentid):
+def createEmployee(request, parentid, supid):
     data = request.data
     department = Department.objects.get(departmentId=parentid)
+    supervisor = Employee.objects.get(employeetId=supid)
     employee = Employee.objects.create(
         employeeMat=data['employeeMat'],
         department=department,
+        supervisor=supervisor,
         firstname=data['firstname'],
         lastname=data['lastname'],
         birthdate=data['birthdate'],
@@ -136,3 +138,200 @@ def getDocument(request, pk):
     document = Document.objects.get(documentId=pk)
     serializer = DocumentSerializer(document, many=False)
     return Response(serializer.data)
+
+#Update a single document
+@api_view(['PUT'])
+def updateDocument(request, pk):
+    data = request.data
+    document = Document.objects.get(documentId=pk)
+    serializer = DocumentSerializer(instance=document, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data)
+
+
+    #create a single document
+@api_view(['POST'])
+def createDocument(request, employeeid):
+    data = request.data
+    employee = Employee.objects.get(employeeId=employeeid)
+    document = Document.objects.create(
+        employee= employee,
+        numCni=data['numCni'],
+        cniupload=data['cniupload'],
+        diploma=data['diploma'],
+        diplomaupload=data['diplomaupload'],
+        mariagecertificate=data['mariagecertificate']
+        
+    )
+    serializer = DocumentSerializer(document, many=False)
+    return Response(serializer.data)  
+
+#delete a single document
+@api_view(['DELETE'])
+def deleteDocument(request, pk):
+    document = Document.objects.get(documentId=pk)
+    document.delete()
+    return Response('Document was deleted!') 
+
+
+# ============== Internal Contract management ==================== 
+# get all internal contracts
+@api_view(['GET'])
+def getInternals(request):
+    internals = Internal.objects.all()
+    serializer = InternalSerializer(internals, many=True)
+    return Response(serializer.data)
+
+#get a single Internal contract
+@api_view(['GET'])
+def getInternal(request, pk):
+    internal = Internal.objects.get(contractId=pk)
+    serializer = InternalSerializer(internal, many=False)
+    return Response(serializer.data)     
+
+#Update a single internal contract
+@api_view(['PUT'])
+def updateInternal(request, pk):
+    data = request.data
+    internal = Internal.objects.get(contractId=pk)
+    serializer = InternalSerializer(instance=internal, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single internal contract
+@api_view(['POST'])
+def createInternal(request, employeeid):
+    data = request.data
+    employee = Employee.objects.get(employeeId=employeeid)
+    internal = Internal.objects.create(
+        contract_no=data['contract_no'],
+        employee= employee,
+        dateofcreation=data['dateofcreation'],
+        duration=data['duration'],
+        formofcontract=data['formofcontract'],
+        contractupload=data['contractupload']
+        
+    )
+    serializer = InternalSerializer(internal, many=False)
+    return Response(serializer.data)  
+
+#delete a single internal contract
+@api_view(['DELETE'])
+def deleteInternal(request, pk):
+    internal = Internal.objects.get(contractId=pk)
+    internal.delete()
+    return Response('Internal Contract was deleted!')      
+     
+
+# ============== External Contract management ==================== 
+# get all external contracts
+@api_view(['GET'])
+def getExternals(request):
+    externals = External.objects.all()
+    serializer = ExternalSerializer(externals, many=True)
+    return Response(serializer.data)
+
+#get a single External contract
+@api_view(['GET'])
+def getExternal(request, pk):
+    external = External.objects.get(contractId=pk)
+    serializer = ExternalSerializer(external, many=False)
+    return Response(serializer.data)     
+
+#Update a single external contract
+@api_view(['PUT'])
+def updateExternal(request, pk):
+    data = request.data
+    external = External.objects.get(contractId=pk)
+    serializer = ExternalSerializer(instance=external, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single external contract
+@api_view(['POST'])
+def createExternal(request, agentid):
+    data = request.data
+    agent = Agent.objects.get(agentId=agentid)
+    external = External.objects.create(
+        contract_no=data['contract_no'],
+        agent= agent,
+        dateofcreation=data['dateofcreation'],
+        duration=data['duration'],
+        formofcontract=data['formofcontract'],
+        contractupload=data['contractupload']
+        
+    )
+    serializer = ExternalSerializer(external, many=False)
+    return Response(serializer.data)  
+
+#delete a single external contract
+@api_view(['DELETE'])
+def deleteExternal(request, pk):
+    external = External.objects.get(contractId=pk)
+    external.delete()
+    return Response('External Contract was deleted!')
+
+
+# ============== Agent management ==================== 
+# get all agents
+@api_view(['GET'])
+def getAgents(request):
+    agents = Agent.objects.all()
+    serializer = AgentSerializer(agents, many=True)
+    return Response(serializer.data)
+
+#get a single Agent
+@api_view(['GET'])
+def getAgent(request, pk):
+    agent = Agent.objects.get(agentId=pk)
+    serializer = AgentSerializer(agent, many=False)
+    return Response(serializer.data)     
+
+#Update a single external contract
+@api_view(['PUT'])
+def updateAgent(request, pk):
+    data = request.data
+    agent = Agent.objects.get(agentId=pk)
+    serializer = AgentSerializer(instance=agent, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single agent
+@api_view(['POST'])
+def createAgent(request):
+    data = request.data
+    agent = Agent.objects.create(
+        firstname=data['firstname'],
+        lastname=data['lastname'],
+        address=data['address'],
+        phone=data['phone'],
+        email=data['email'],
+        company=data['company'],
+        niu=data['niu'],
+        observation=data['observation'],
+        bankaccount=data['bankaccount'],
+        agent=data['agent']
+
+    )
+    serializer = AgentSerializer(agent, many=False)
+    return Response(serializer.data)  
+
+#delete a single agent 
+@api_view(['DELETE'])
+def deleteAgent(request, pk):
+    agent = Agent.objects.get(agentId=pk)
+    agent.delete()
+    return Response('Agent was deleted!')          
+          
