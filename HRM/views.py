@@ -83,12 +83,12 @@ def updateEmployee(request, pk):
 
  #create a single employee
 @api_view(['POST'])
-def createEmployee(request, parentid, supid):
+def createEmployee(request, departmentid, supid):
     data = request.data
-    department = Department.objects.get(departmentId=parentid)
-    supervisor = Employee.objects.get(employeetId=supid)
+    department = Department.objects.get(departmentId=departmentid)
+    supervisor = Employee.objects.get(employeeId=supid)
     employee = Employee.objects.create(
-        employeeMat=data['employeeMat'],
+        #employeeMat=matricule, 
         department=department,
         supervisor=supervisor,
         firstname=data['firstname'],
@@ -335,3 +335,4 @@ def deleteAgent(request, pk):
     agent.delete()
     return Response('Agent was deleted!')          
           
+

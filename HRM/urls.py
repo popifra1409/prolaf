@@ -14,7 +14,7 @@ urlpatterns = [
     path('employees/',views.getEmployees, name="employees"),
     path('employees/<str:pk>/update/',views.updateEmployee, name="update-employee"),
     path('employees/<str:pk>/delete/',views.deleteEmployee, name="delete-employee"),
-    path('employees/<str:parentid>/create/',views.createEmployee, name="create-employee"),
+    path('employees/<str:supid>/<str:departmentid>/create/',views.createEmployee, name="create-employee"),
     path('employees/<str:pk>/',views.getEmployee, name="employee"),
  
 
