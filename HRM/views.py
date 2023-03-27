@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Department, Employee, Document, Internal, External, Agent
-from .serializers import DepartmentSerializer, EmployeeSerializer, DocumentSerializer, InternalSerializer, ExternalSerializer, AgentSerializer
+from .models import Department, Employee, Document, Internal, External, Client, Supplier
+from .serializers import DepartmentSerializer, EmployeeSerializer, DocumentSerializer, InternalSerializer, ExternalSerializer, ClientSerializer, SupplierSerializer
 
 
 # ============== Departement management ====================
@@ -83,12 +83,11 @@ def updateEmployee(request, pk):
 
  #create a single employee
 @api_view(['POST'])
-def createEmployee(request, departmentid, supid):
+def createEmployee(request, supid, departmentid):
     data = request.data
     department = Department.objects.get(departmentId=departmentid)
     supervisor = Employee.objects.get(employeeId=supid)
     employee = Employee.objects.create(
-        #employeeMat=matricule, 
         department=department,
         supervisor=supervisor,
         firstname=data['firstname'],
@@ -151,7 +150,7 @@ def updateDocument(request, pk):
 
     return Response(serializer.data)
 
-
+  
     #create a single document
 @api_view(['POST'])
 def createDocument(request, employeeid):
@@ -260,7 +259,7 @@ def updateExternal(request, pk):
 @api_view(['POST'])
 def createExternal(request, agentid):
     data = request.data
-    agent = Agent.objects.get(agentId=agentid)
+    client = Client.objects.get(agentId=agentid)
     external = External.objects.create(
         contract_no=data['contract_no'],
         agent= agent,
@@ -281,38 +280,38 @@ def deleteExternal(request, pk):
     return Response('External Contract was deleted!')
 
 
-# ============== Agent management ==================== 
-# get all agents
+# ============== Client management ==================== 
+# get all clients
 @api_view(['GET'])
-def getAgents(request):
-    agents = Agent.objects.all()
-    serializer = AgentSerializer(agents, many=True)
+def getClients(request):
+    clients = Client.objects.all()
+    serializer = ClientSerializer(clients, many=True)
     return Response(serializer.data)
 
-#get a single Agent
+#get a single Client
 @api_view(['GET'])
-def getAgent(request, pk):
-    agent = Agent.objects.get(agentId=pk)
-    serializer = AgentSerializer(agent, many=False)
+def getClient(request, pk):
+    client = Client.objects.get(agentId=pk)
+    serializer = ClientSerializer(client, many=False)
     return Response(serializer.data)     
 
-#Update a single external contract
+#Update a single client
 @api_view(['PUT'])
-def updateAgent(request, pk):
+def updateClient(request, pk):
     data = request.data
-    agent = Agent.objects.get(agentId=pk)
-    serializer = AgentSerializer(instance=agent, data=data)
+    client = Client.objects.get(agentId=pk)
+    serializer = ClientSerializer(instance=client, data=data)
 
     if serializer.is_valid():
         serializer.save()
 
     return Response(serializer.data) 
 
-#create a single agent
+#create a single client
 @api_view(['POST'])
-def createAgent(request):
+def createClient(request):
     data = request.data
-    agent = Agent.objects.create(
+    client = Client.objects.create(
         firstname=data['firstname'],
         lastname=data['lastname'],
         address=data['address'],
@@ -321,18 +320,70 @@ def createAgent(request):
         company=data['company'],
         niu=data['niu'],
         observation=data['observation'],
-        bankaccount=data['bankaccount'],
-        agent=data['agent']
+        bankaccount=data['bankaccount']
 
     )
-    serializer = AgentSerializer(agent, many=False)
+    serializer = ClientSerializer(client, many=False)
     return Response(serializer.data)  
 
-#delete a single agent 
+#delete a single client
 @api_view(['DELETE'])
-def deleteAgent(request, pk):
-    agent = Agent.objects.get(agentId=pk)
-    agent.delete()
-    return Response('Agent was deleted!')          
+def deleteClient(request, pk):
+    client = Client.objects.get(agentId=pk)
+    client.delete()
+    return Response('Client was deleted!')                
           
+
+# ============== Supplier management ==================== 
+# get all suppliers
+@api_view(['GET'])
+def getSuppliers(request):
+    suppliers = Supplier.objects.all()
+    serializer = SupplierSerializer(suppliers, many=True)
+    return Response(serializer.data)
+
+#get a single supplier
+@api_view(['GET'])
+def getSupplier(request, pk):
+    supplier = Supplier.objects.get(agentId=pk)
+    serializer = SupplierSerializer(supplier, many=False)
+    return Response(serializer.data)     
+
+#Update a single supplier
+@api_view(['PUT'])
+def updateSupplier(request, pk):
+    data = request.data
+    supplier = Supplier.objects.get(agentId=pk)
+    serializer = SupplierSerializer(instance=supplier, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single supplier
+@api_view(['POST'])
+def createSupplier(request):
+    data = request.data
+    supplier = Supplier.objects.create(
+        firstname=data['firstname'],
+        lastname=data['lastname'],
+        address=data['address'],
+        phone=data['phone'],
+        email=data['email'],
+        company=data['company'],
+        niu=data['niu'],
+        observation=data['observation'],
+        bankaccount=data['bankaccount']
+
+    )
+    serializer = SupplierSerializer(supplier, many=False)
+    return Response(serializer.data)  
+
+#delete a single client
+@api_view(['DELETE'])
+def deleteSupplier(request, pk):
+    supplier = Supplier.objects.get(agentId=pk)
+    supplier.delete()
+    return Response('Supplier was deleted!')
 
