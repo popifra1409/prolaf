@@ -65,7 +65,7 @@ class Member(models.Model):
     post_weaning = models.DateField(blank=True, null=True)
     mother = models.ForeignKey(
         "self", related_name="Mother",  null=True, blank=True, on_delete=models.SET_NULL)   
-    fathers = models.ForeignKey(
+    father = models.ForeignKey(
         "self", related_name="Father",  null=True, blank=True, on_delete=models.SET_NULL)   
     gender = models.CharField(
         max_length=20, blank=True, null=True, choices= GENDER_CHOICES, default='Male')
