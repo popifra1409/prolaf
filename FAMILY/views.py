@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.utils import timezone
+from datetime import timedelta
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Building, Lodge, Family, Member
@@ -206,4 +208,13 @@ def createMember(request, familyid, lodgeid, motherid, fatherid):
 def deleteMember(request, pk):
     member = Member.objects.get(memberId=pk)
     member.delete()
-    return Response('Member was deleted!')        
+    return Response('Member was deleted!')
+
+#post_weaning alert
+@api_view(['GET'])
+def is_near_post_weaning(request):
+    now = timezone.now().date()
+    members_seven = Member.objects.filter(post_weaning__gt=now, post_weaning__lte=now+timedelta(days=7))
+    serializer = MemberSerializer(members_seven, many=True)
+    return Response(serializer.data)
+

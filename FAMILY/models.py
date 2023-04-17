@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 import random
 import datetime
+from datetime import timedelta, date
 
 
 # Buildings Model
@@ -62,7 +63,7 @@ class Member(models.Model):
         Lodge, blank=True, null=True, on_delete=models.SET_NULL)     
     member_name = models.CharField(max_length=150, blank=False, null=False)
     birthdate = models.DateField(blank=True, null=True)
-    post_weaning = models.DateField(blank=True, null=True)
+    post_weaning = models.DateField(editable=False)
     mother = models.ForeignKey(
         "self", related_name="Mother",  null=True, blank=True, on_delete=models.SET_NULL)   
     father = models.ForeignKey(
@@ -76,15 +77,24 @@ class Member(models.Model):
     def __str__(self):
         return str(self.member_name)
 
+    """ #post_weaning alert
+    def is_near_post_weaning(self):
+        post_weaning_date = self.post_weaning
+        now = timezone.now().date()
+        if(post_weaning_date - now)<=7:
+            return True
+        return False    
+
+ """
+
     def save(self, *args, **kwargs):
         if self.mother:
             #get member corresponding to the mother
             member = Member.objects.get(memberId=self.mother.memberId)
             self.generation = member.generation + 1 
-        super(Member, self).save(*args, **kwargs)    
-   
 
+        self.post_weaning = self.birthdate + timedelta(days=30)
+        super(Member, self).save(*args, **kwargs)
 
+        
 
- 
-    

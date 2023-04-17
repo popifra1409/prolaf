@@ -32,6 +32,7 @@ urlpatterns = [
     path('members/<str:pk>/delete/',views.deleteMember, name="delete-Member"),
     path('members/<str:familyid>/<str:lodgeid>/<str:motherid>/<str:fatherid>/create/',views.createMember, name="create-Member"),
     path('members/<str:pk>/',views.getMember, name="member"),
+    path('members/post_weaning',views.is_near_post_weaning, name="post_weaning")
 
 
 
