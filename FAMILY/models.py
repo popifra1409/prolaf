@@ -52,12 +52,12 @@ class Family(models.Model):
 class Member(models.Model):
 
     GENDER_CHOICES = (('male', 'Male'), ('female',
-                      'Female'))
+                      'Female'))               
 
     memberId =  models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
     family = models.ForeignKey(
-        Family, blank=False, null=False, on_delete=models.CASCADE)
+        Family, blank=False, null=False, on_delete=models.CASCADE) 
     lodge = models.ForeignKey(
         Lodge, blank=True, null=True, on_delete=models.SET_NULL)     
     member_name = models.CharField(max_length=150, blank=False, null=False)
@@ -69,11 +69,20 @@ class Member(models.Model):
         "self", related_name="Father",  null=True, blank=True, on_delete=models.SET_NULL)   
     gender = models.CharField(
         max_length=20, blank=True, null=True, choices= GENDER_CHOICES, default='Male')
+    generation = models.IntegerField(default=0, editable=False)   
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True) 
 
     def __str__(self):
         return str(self.member_name)
+
+    def save(self, *args, **kwargs):
+        if self.mother:
+            #get member corresponding to the mother
+            member = Member.objects.get(memberId=self.mother.memberId)
+            self.generation = member.generation + 1 
+        super(Member, self).save(*args, **kwargs)    
+   
 
 
 
