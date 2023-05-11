@@ -3,8 +3,8 @@ from django.utils import timezone
 from datetime import timedelta
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Building, Lodge, Family, Member
-from .serializers import BuildingSerializer, LodgeSerializer, FamilySerializer, MemberSerializer
+from .models import Building, Lodge, Family, Member, Parameter, Param_Registration
+from .serializers import BuildingSerializer, LodgeSerializer, FamilySerializer, MemberSerializer, ParameterSerializer, ParamRegistrationSerializer
 
 
 # ============== Building management ====================
@@ -210,11 +210,123 @@ def deleteMember(request, pk):
     member.delete()
     return Response('Member was deleted!')
 
-#post_weaning alert
+
+# ============== Parameter management ====================
+# get all parameters
 @api_view(['GET'])
-def is_near_post_weaning(request):
-    now = timezone.now().date()
-    members_seven = Member.objects.filter(post_weaning__gt=now, post_weaning__lte=now+timedelta(days=7))
-    serializer = MemberSerializer(members_seven, many=True)
+def getParameters(request):
+    parameters = Parameter.objects.all()
+    serializer = ParameterSerializer(parameters, many=True)
     return Response(serializer.data)
 
+#get a single parameter
+@api_view(['GET'])
+def getParameter(request, pk):
+    parameter = Parameter.objects.get(parameterId=pk)
+    serializer = ParameterSerializer(parameter, many=False)
+    return Response(serializer.data)
+
+#Update a single parameter
+@api_view(['PUT'])
+def updateParameter(request, pk):
+    data = request.data
+    parameter = Parameter.objects.get(parameterId=pk)
+    serializer = ParameterSerializer(instance=parameter, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single member
+@api_view(['POST'])
+def createParameter(request):
+    data = request.data
+    parameter = Parameter.objects.create(
+        name=data['name'],
+        unit=data['unit']       
+    )
+    serializer = ParameterSerializer(parameter, many=False)
+    return Response(serializer.data) 
+
+#delete a single parameter
+@api_view(['DELETE'])
+def deleteParameter(request, pk):
+    parameter = Parameter.objects.get(parameterId=pk)
+    parameter.delete()
+    return Response('Parameter was deleted!')
+
+
+
+# ============== Param_Registration management ====================
+# get all Param_Registration
+@api_view(['GET'])
+def getParam_Registrations(request):
+    param_Registrations = Param_Registration.objects.all()
+    serializer = ParamRegistrationSerializer(param_Registrations, many=True)
+    return Response(serializer.data)
+
+#get a single Param_Registration
+@api_view(['GET'])
+def getParam_Registration(request, pk):
+    param_Registration = Param_Registration.objects.get(paramRegistrationId=pk)
+    serializer = ParamRegistrationSerializer(param_Registration, many=False)
+    return Response(serializer.data)
+
+#Update a single Param_Registration
+@api_view(['PUT'])
+def updateParam_Registration(request, pk):
+    data = request.data
+    param_Registration = Param_Registration.objects.get(paramRegistrationId=pk)
+    serializer = ParamRegistrationSerializer(instance=param_Registration, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single Param_Registration
+@api_view(['POST'])
+def createParam_Registration(request, memberid, nameid):
+    data = request.data
+    member = Member.objects.get(memberId=memberid)
+    parameter = Parameter.objects.get(parameterId=nameid)
+    param_Registration = Param_Registration.objects.create(
+        member = member,
+        name = parameter,
+        value=data['value']     
+    )
+    serializer = ParamRegistrationSerializer(param_Registration, many=False)
+    return Response(serializer.data) 
+
+#delete a single param_Registration
+@api_view(['DELETE'])
+def deleteParam_Registration(request, pk):
+    param_Registration = Param_Registration.objects.get(paramRegistrationId=pk)
+    param_Registration.delete()
+    return Response('Param_Registration was deleted!')
+
+
+#post_weaning alert
+@api_view(['GET'])
+def is_near_post_weaning(request): 
+    now = timezone.now().date()
+    members = Member.objects.filter(post_weaning__gt=now, post_weaning__lte=now+timedelta(days=7))
+    serializer = MemberSerializer(members, many=True)
+    return Response(serializer.data)
+
+#pre_magnification alert
+@api_view(['GET'])
+def is_near_pre_magnification(request):
+    now = timezone.now().date()
+    members = Member.objects.filter(pre_magnification__gt=now, pre_magnification__lte=now+timedelta(days=7)) #lte=less than or equal to
+    serializer = MemberSerializer(members, many=True)
+    return Response(serializer.data)
+
+ #magnification alert
+@api_view(['GET'])
+def is_near_magnification(request):
+    now = timezone.now().date()
+    members = Member.objects.filter(magnification__gt=now, magnification__lte=now+timedelta(days=7))
+    serializer = MemberSerializer(members, many=True)
+    return Response(serializer.data) 

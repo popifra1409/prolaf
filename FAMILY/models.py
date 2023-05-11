@@ -64,6 +64,8 @@ class Member(models.Model):
     member_name = models.CharField(max_length=150, blank=False, null=False)
     birthdate = models.DateField(blank=True, null=True)
     post_weaning = models.DateField(editable=False)
+    pre_magnification = models.DateField(editable=False, null=True)
+    magnification = models.DateField(editable=False, null=True)
     mother = models.ForeignKey(
         "self", related_name="Mother",  null=True, blank=True, on_delete=models.SET_NULL)   
     father = models.ForeignKey(
@@ -77,15 +79,6 @@ class Member(models.Model):
     def __str__(self):
         return str(self.member_name)
 
-    """ #post_weaning alert
-    def is_near_post_weaning(self):
-        post_weaning_date = self.post_weaning
-        now = timezone.now().date()
-        if(post_weaning_date - now)<=7:
-            return True
-        return False    
-
- """
 
     def save(self, *args, **kwargs):
         if self.mother:
@@ -94,7 +87,43 @@ class Member(models.Model):
             self.generation = member.generation + 1 
 
         self.post_weaning = self.birthdate + timedelta(days=30)
+        self.pre_magnification = self.birthdate + timedelta(days=60)
+        self.magnification = self.birthdate + timedelta(days=90)
         super(Member, self).save(*args, **kwargs)
+     
 
+
+#Parameter Model
+class Parameter(models.Model):
+    parameterId =  models.UUIDField(
+        primary_key=True, unique=True, editable=False, default=uuid.uuid4)
+    name = models.CharField(max_length=150, blank=False, null=False)    
+    unit = models.CharField(max_length=15, blank=True, null=True)
+    createDate = models.DateTimeField(auto_now_add=True)
+    updateDate = models.DateTimeField(auto_now=True) 
+
+    def __str__(self):
+        return str(self.name)
+
+
+ #Parameter Registration Model
+class Param_Registration(models.Model):
+    paramRegistrationId =  models.UUIDField(
+        primary_key=True, unique=True, editable=False, default=uuid.uuid4)
+    member = models.ForeignKey(
+        Member, blank=False, null=False, on_delete=models.CASCADE)
+    parameter = models.ForeignKey(
+        Parameter, blank=False, null=False, on_delete=models.CASCADE)   
+    #unit = models.ForeignKey(
+        #Parameter, blank=False, null=False, on_delete=models.CASCADE)            
+    value = models.CharField(max_length=20,  blank= False, null= False)
+    createDate = models.DateTimeField(auto_now_add=True)
+    updateDate = models.DateTimeField(auto_now=True) 
+
+    def __str__(self):
+        return str(self.member)
+
+
+    
         
 

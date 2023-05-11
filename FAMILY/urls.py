@@ -32,8 +32,25 @@ urlpatterns = [
     path('members/<str:pk>/delete/',views.deleteMember, name="delete-Member"),
     path('members/<str:familyid>/<str:lodgeid>/<str:motherid>/<str:fatherid>/create/',views.createMember, name="create-Member"),
     path('members/<str:pk>/',views.getMember, name="member"),
-    path('members/post_weaning',views.is_near_post_weaning, name="post_weaning")
+    path('members_post_weaning/',views.is_near_post_weaning, name="post_weaning"),
+    path('members_pre_magnification/',views.is_near_pre_magnification, name="pre_magnification"),
+    path('members_magnification/',views.is_near_magnification, name="magnification"),
 
+
+#Parameter urls
+    path('parameters/',views.getParameters, name="parameters"),
+    path('parameters/<str:pk>/update/',views.updateParameter, name="update-Parameter"),
+    path('parameters/<str:pk>/delete/',views.deleteParameter, name="delete-Parameter"),
+    path('parameters/create/',views.createParameter, name="create-Parameter"),
+    path('parameters/<str:pk>/',views.getParameter, name="Parameter"),
+
+
+#Parameter urls
+    path('param_Registrations/',views.getParam_Registrations, name="param_Registrations"),
+    path('param_Registrations/<str:pk>/update/',views.updateParam_Registration, name="update-param_Registration"),
+    path('param_Registrations/<str:pk>/delete/',views.deleteParam_Registration, name="delete-param_Registration"),
+    path('param_Registrations/<str:memberid>/<str:nameid>/create/',views.createParam_Registration, name="create-param_Registration"),
+    path('param_Registrations/<str:pk>/',views.getParam_Registration, name="param_Registration"),
 
 
 ]    
