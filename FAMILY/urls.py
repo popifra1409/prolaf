@@ -45,20 +45,20 @@ urlpatterns = [
     path('parameters/<str:pk>/',views.getParameter, name="Parameter"),
 
 
-#Pig_ParamRegistrations urls
-    path('pig_ParamRegistrations/',views.getPig_ParamRegistrations, name="pig_ParamRegistrations"),
-    path('pig_ParamRegistrations/<str:pk>/update/',views.updatePig_ParamRegistration, name="update-pig_ParamRegistration"),
-    path('pig_ParamRegistrations/<str:pk>/delete/',views.deletePig_ParamRegistration, name="delete-pig_ParamRegistration"),
-    path('pig_ParamRegistrations/<str:memberid>/<str:nameid>/create/',views.createPig_ParamRegistration, name="create-pig_ParamRegistration"),
-    path('pig_ParamRegistrations/<str:pk>/',views.gePig_ParamRegistration, name="pig_ParamRegistration"),
+#ParamRegistrations urls
+    path('paramRegistrations/',views.getParamRegistrations, name="pig_ParamRegistrations"),
+    path('paramRegistrations/<str:pk>/update/',views.updateParamRegistration, name="update-paramRegistration"),
+    path('paramRegistrations/<str:pk>/delete/',views.deleteParamRegistration, name="delete-paramRegistration"),
+    path('paramRegistrations/<str:memberid>/<str:nameid>/create/',views.createParamRegistration, name="create-paramRegistration"),
+    path('paramRegistrations/<str:pk>/',views.getParamRegistration, name="paramRegistration"),
 
 
 #Lodge_Registration urls
-    path('pig_LodgeRegistrations/',views.getPig_LodgeRegistrations, name="lodge_Registrations"),
-    path('pig_LodgeRegistrations/<str:pk>/update/',views.updatePig_LodgeRegistration, name="update-pig_LodgeRegistration"),
-    path('pig_LodgeRegistrations/<str:pk>/delete/',views.deletePig_LodgeRegistration, name="delete-pig_LodgeRegistration"),
-    path('pig_LodgeRegistrations/<str:memberid>/<str:lodgeid>/create/',views.createPig_LodgeRegistration, name="create-pig_LodgeRegistration"),
-    path('pig_LodgeRegistrations/<str:pk>/',views.getPig_LodgeRegistration, name="pig_LodgeRegistration"),    
+    path('lodge_Registrations/',views.getLodge_Registrations, name="lodge_Registrations"),
+    path('lodge_Registrations/<str:pk>/update/',views.updateLodge_Registration, name="update-lodge_Registration"),
+    path('lodge_Registrations/<str:pk>/delete/',views.deleteLodge_Registration, name="delete-lodge_Registration"),
+    path('lodge_Registrations/<str:memberid>/<str:lodgeid>/create/',views.createLodge_Registration, name="create-lodge_Registration"),
+    path('lodge_Registrations/<str:pk>/',views.getLodge_Registration, name="lodge_Registration"),    
 
 
 ]    

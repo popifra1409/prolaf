@@ -8,8 +8,8 @@ from .models import Lodge
 from .models import Family
 from .models import Pig
 from .models import Parameter
-from .models import Pig_ParamRegistration
-from .models import Pig_LodgeRegistration
+from .models import ParamRegistration
+from .models import Lodge_Registration
 
 
 
@@ -18,5 +18,5 @@ admin.site.register(Lodge)
 admin.site.register(Family)
 admin.site.register(Pig)
 admin.site.register(Parameter)
-admin.site.register(Pig_ParamRegistration)
-admin.site.register(Pig_LodgeRegistration)
+admin.site.register(ParamRegistration)
+admin.site.register(Lodge_Registration)

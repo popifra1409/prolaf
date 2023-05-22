@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Building, Lodge, Family, Pig, Parameter, Pig_ParamRegistration, Pig_LodgeRegistration
+from .models import Building, Lodge, Family, Pig, Parameter,ParamRegistration, Lodge_Registration
 
 class BuildingSerializer(ModelSerializer):
     class Meta:
@@ -29,12 +29,12 @@ class ParameterSerializer(ModelSerializer):
         model = Parameter
         fields = '__all__'                        
 
-class Pig_ParamRegistrationSerializer(ModelSerializer):
+class ParamRegistrationSerializer(ModelSerializer):
     class Meta:
-        model = Pig_ParamRegistration
+        model = ParamRegistration
         fields = '__all__'
 
-class Pig_LodgeRegistrationSerializer(ModelSerializer):
+class LodgeRegistrationSerializer(ModelSerializer):
     class Meta:
-        model = Pig_LodgeRegistration
+        model = Lodge_Registration
         fields = '__all__'        

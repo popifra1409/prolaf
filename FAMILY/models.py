@@ -68,6 +68,10 @@ class Member(models.Model):
     birthdate = models.DateField(max_length=150,blank=True, null=True)   
     gender = models.CharField(
         max_length=20, blank=True, null=True, choices= GENDER_CHOICES, default='Male')
+    mother = models.ForeignKey(
+        "self", related_name="Mother",  null=True, blank=True, on_delete=models.SET_NULL)   
+    father = models.ForeignKey(
+        "self", related_name="Father",  null=True, blank=True, on_delete=models.SET_NULL)    
     generation = models.IntegerField(default=0, editable=False)   
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True) 
@@ -79,10 +83,6 @@ class Member(models.Model):
         abstract = True
 
 class Pig(Member):
-    mother = models.ForeignKey(
-        "self", related_name="Mother",  null=True, blank=True, on_delete=models.SET_NULL)   
-    father = models.ForeignKey(
-        "self", related_name="Father",  null=True, blank=True, on_delete=models.SET_NULL)
     post_weaning = models.DateTimeField(editable=False)
     pre_magnification = models.DateTimeField(editable=False, null=True)
     magnification = models.DateTimeField(editable=False, null=True)        
@@ -126,13 +126,6 @@ class Param_Registration(models.Model):
     value = models.CharField(max_length=20,  blank= False, null= False)
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True) 
-
-    class Meta:
-        abstract = True
-
-class Pig_ParamRegistration(Param_Registration):
-    pig_name = models.ForeignKey(
-        "pig",  null=True, blank=True, on_delete=models.SET_NULL)
         
     def __str__(self):
         return str(self.pig_name)
@@ -173,13 +166,6 @@ class Lodge_Registration(models.Model):
         super(Lodge_Registration, self).save(*args, **kwargs)
 
 
-    class Meta:
-        abstract = True
-
-class Pig_LodgeRegistration(Lodge_Registration):
-    pig_name = models.ForeignKey(
-        "pig",  null=True, blank=True, on_delete=models.SET_NULL)
-        
     def __str__(self):
         return str(self.pig_name)
         
