@@ -27,14 +27,14 @@ urlpatterns = [
 
 
 #Member urls
-    path('members/',views.getMembers, name="members"),
-    path('members/<str:pk>/update/',views.updateMember, name="update-Member"),
-    path('members/<str:pk>/delete/',views.deleteMember, name="delete-Member"),
-    path('members/<str:familyid>/<str:lodgeid>/<str:motherid>/<str:fatherid>/create/',views.createMember, name="create-Member"),
-    path('members/<str:pk>/',views.getMember, name="member"),
-    path('members_post_weaning/',views.is_near_post_weaning, name="post_weaning"),
-    path('members_pre_magnification/',views.is_near_pre_magnification, name="pre_magnification"),
-    path('members_magnification/',views.is_near_magnification, name="magnification"),
+    path('pigs/',views.getPigs, name="pigs"),
+    path('pigs/<str:pk>/update/',views.updatePig, name="update-Pig"),
+    path('pigs/<str:pk>/delete/',views.deletePig, name="delete-Pig"),
+    path('pigs/<str:familyid>/<str:lodgeid>/<str:motherid>/<str:fatherid>/create/',views.createPig, name="create-Pig"),
+    path('pigs/<str:pk>/',views.getPig, name="pig"),
+    path('pigs_post_weaning/',views.is_near_post_weaning, name="post_weaning"),
+    path('pigs_pre_magnification/',views.is_near_pre_magnification, name="pre_magnification"),
+    path('pigs_magnification/',views.is_near_magnification, name="magnification"),
 
 
 #Parameter urls
@@ -45,12 +45,20 @@ urlpatterns = [
     path('parameters/<str:pk>/',views.getParameter, name="Parameter"),
 
 
-#Parameter urls
-    path('param_Registrations/',views.getParam_Registrations, name="param_Registrations"),
-    path('param_Registrations/<str:pk>/update/',views.updateParam_Registration, name="update-param_Registration"),
-    path('param_Registrations/<str:pk>/delete/',views.deleteParam_Registration, name="delete-param_Registration"),
-    path('param_Registrations/<str:memberid>/<str:nameid>/create/',views.createParam_Registration, name="create-param_Registration"),
-    path('param_Registrations/<str:pk>/',views.getParam_Registration, name="param_Registration"),
+#Pig_ParamRegistrations urls
+    path('pig_ParamRegistrations/',views.getPig_ParamRegistrations, name="pig_ParamRegistrations"),
+    path('pig_ParamRegistrations/<str:pk>/update/',views.updatePig_ParamRegistration, name="update-pig_ParamRegistration"),
+    path('pig_ParamRegistrations/<str:pk>/delete/',views.deletePig_ParamRegistration, name="delete-pig_ParamRegistration"),
+    path('pig_ParamRegistrations/<str:memberid>/<str:nameid>/create/',views.createPig_ParamRegistration, name="create-pig_ParamRegistration"),
+    path('pig_ParamRegistrations/<str:pk>/',views.gePig_ParamRegistration, name="pig_ParamRegistration"),
+
+
+#Lodge_Registration urls
+    path('pig_LodgeRegistrations/',views.getPig_LodgeRegistrations, name="lodge_Registrations"),
+    path('pig_LodgeRegistrations/<str:pk>/update/',views.updatePig_LodgeRegistration, name="update-pig_LodgeRegistration"),
+    path('pig_LodgeRegistrations/<str:pk>/delete/',views.deletePig_LodgeRegistration, name="delete-pig_LodgeRegistration"),
+    path('pig_LodgeRegistrations/<str:memberid>/<str:lodgeid>/create/',views.createPig_LodgeRegistration, name="create-pig_LodgeRegistration"),
+    path('pig_LodgeRegistrations/<str:pk>/',views.getPig_LodgeRegistration, name="pig_LodgeRegistration"),    
 
 
 ]    

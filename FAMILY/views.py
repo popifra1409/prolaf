@@ -3,8 +3,8 @@ from django.utils import timezone
 from datetime import timedelta
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Building, Lodge, Family, Member, Parameter, Param_Registration
-from .serializers import BuildingSerializer, LodgeSerializer, FamilySerializer, MemberSerializer, ParameterSerializer, ParamRegistrationSerializer
+from .models import Building, Lodge, Family, Pig, Parameter, Pig_ParamRegistration, Pig_LodgeRegistration
+from .serializers import BuildingSerializer, LodgeSerializer, FamilySerializer, PigSerializer, ParameterSerializer, Pig_ParamRegistrationSerializer, Pig_LodgeRegistrationSerializer
 
 
 # ============== Building management ====================
@@ -154,61 +154,60 @@ def deleteFamily(request, pk):
 
 
 
-# ============== Members management ====================
-# get all members
+# ============== Pigs management ====================
+# get all pigs
 @api_view(['GET'])
-def getMembers(request):
-    members = Member.objects.all()
-    serializer = MemberSerializer(members, many=True)
+def getPigs(request):
+    pigs = Pig.objects.all()
+    serializer = PigSerializer(pigs, many=True)
     return Response(serializer.data)
 
-#get a single member
+#get a single pig
 @api_view(['GET'])
-def getMember(request, pk):
-    member = Member.objects.get(memberId=pk)
-    serializer = MemberSerializer(member, many=False)
+def getPig(request, pk):
+    pig = Pig.objects.get(memberId=pk)
+    serializer = PigSerializer(pig, many=False)
     return Response(serializer.data)
 
-#Update a single member
+#Update a single pig
 @api_view(['PUT'])
-def updateMember(request, pk):
+def updatePig(request, pk):
     data = request.data
-    member = Member.objects.get(memberId=pk)
-    serializer = MemberSerializer(instance=member, data=data)
+    pig = Pig.objects.get(memberId=pk)
+    serializer = PigSerializer(instance=pig, data=data)
 
     if serializer.is_valid():
         serializer.save()
 
     return Response(serializer.data) 
 
-#create a single member
+#create a single pig
 @api_view(['POST'])
-def createMember(request, familyid, lodgeid, motherid, fatherid):
+def createPig(request, familyid, lodgeid, motherid, fatherid):
     data = request.data
     family = Family.objects.get(familyId=familyid)
     lodge = Lodge.objects.get(lodgeId=lodgeid)
-    mother = Member.objects.get(memberId=motherid)
-    father = Member.objects.get(memberId=fatherid)
-    member = Member.objects.create(
+    mother = Pig.objects.get(memberId=motherid)
+    father = Pig.objects.get(memberId=fatherid)
+    pig = Pig.objects.create(
         member_name=data['member_name'],
         family= family,
         lodge= lodge,
         birthdate=data['birthdate'],
-        post_weaning=data['post_weaning'],
         mother=mother,
         father=father,
         gender=data['gender']
         
     )
-    serializer = MemberSerializer(member, many=False)
+    serializer = PigSerializer(pig, many=False)
     return Response(serializer.data) 
 
-#delete a single member
+#delete a single pig
 @api_view(['DELETE'])
-def deleteMember(request, pk):
-    member = Member.objects.get(memberId=pk)
-    member.delete()
-    return Response('Member was deleted!')
+def deletePig(request, pk):
+    pig = Pig.objects.get(memberId=pk)
+    pig.delete()
+    return Response('Pig was deleted!')
 
 
 # ============== Parameter management ====================
@@ -238,7 +237,7 @@ def updateParameter(request, pk):
 
     return Response(serializer.data) 
 
-#create a single member
+#create a single parameter
 @api_view(['POST'])
 def createParameter(request):
     data = request.data
@@ -258,53 +257,53 @@ def deleteParameter(request, pk):
 
 
 
-# ============== Param_Registration management ====================
-# get all Param_Registration
+# ============== Pig_ParamRegistration management ====================
+# get all Pig_ParamRegistrations
 @api_view(['GET'])
-def getParam_Registrations(request):
-    param_Registrations = Param_Registration.objects.all()
-    serializer = ParamRegistrationSerializer(param_Registrations, many=True)
+def getPig_ParamRegistrations(request):
+    pig_ParamRegistrations = Pig_ParamRegistration.objects.all()
+    serializer = Pig_ParamRegistrationSerializer(pig_ParamRegistrations, many=True)
     return Response(serializer.data)
 
-#get a single Param_Registration
+#get a single Pig_ParamRegistration
 @api_view(['GET'])
-def getParam_Registration(request, pk):
-    param_Registration = Param_Registration.objects.get(paramRegistrationId=pk)
-    serializer = ParamRegistrationSerializer(param_Registration, many=False)
+def gePig_ParamRegistration(request, pk):
+    pig_ParamRegistration = Pig_ParamRegistration.objects.get(paramRegistrationId=pk)
+    serializer = Pig_ParamRegistrationSerializer(pig_ParamRegistration, many=False)
     return Response(serializer.data)
 
 #Update a single Param_Registration
 @api_view(['PUT'])
-def updateParam_Registration(request, pk):
+def updatePig_ParamRegistration(request, pk):
     data = request.data
-    param_Registration = Param_Registration.objects.get(paramRegistrationId=pk)
-    serializer = ParamRegistrationSerializer(instance=param_Registration, data=data)
+    pig_ParamRegistration = Pig_ParamRegistration.objects.get(paramRegistrationId=pk)
+    serializer = Pig_ParamRegistrationSerializer(instance=pig_ParamRegistration, data=data)
 
     if serializer.is_valid():
         serializer.save()
 
     return Response(serializer.data) 
 
-#create a single Param_Registration
+#create a single Pig_ParamRegistration
 @api_view(['POST'])
-def createParam_Registration(request, memberid, nameid):
+def createPig_ParamRegistration(request, memberid, nameid):
     data = request.data
-    member = Member.objects.get(memberId=memberid)
+    member = Pig.objects.get(memberId=memberid)
     parameter = Parameter.objects.get(parameterId=nameid)
-    param_Registration = Param_Registration.objects.create(
-        member = member,
-        name = parameter,
+    param_Registration = Pig_ParamRegistration.objects.create(
+        pig_name = member,
+        parameter = parameter,
         value=data['value']     
     )
-    serializer = ParamRegistrationSerializer(param_Registration, many=False)
+    serializer = Pig_ParamRegistrationSerializer(param_Registration, many=False)
     return Response(serializer.data) 
 
 #delete a single param_Registration
 @api_view(['DELETE'])
-def deleteParam_Registration(request, pk):
-    param_Registration = Param_Registration.objects.get(paramRegistrationId=pk)
-    param_Registration.delete()
-    return Response('Param_Registration was deleted!')
+def deletePig_ParamRegistration(request, pk):
+    pig_ParamRegistration = Pig_ParamRegistration.objects.get(paramRegistrationId=pk)
+    pig_ParamRegistration.delete()
+    return Response('Pig_ParamRegistration was deleted!')
 
 
 #post_weaning alert
@@ -330,3 +329,58 @@ def is_near_magnification(request):
     members = Member.objects.filter(magnification__gt=now, magnification__lte=now+timedelta(days=7))
     serializer = MemberSerializer(members, many=True)
     return Response(serializer.data) 
+
+
+    # ============== Pig_LodgeRegistration management ====================
+# get all Pig_LodgeRegistration
+@api_view(['GET'])
+def getPig_LodgeRegistrations(request):
+    pig_LodgeRegistrations = Pig_LodgeRegistration.objects.all()
+    serializer = Pig_LodgeRegistrationSerializer(pig_LodgeRegistrations, many=True)
+    return Response(serializer.data)
+
+#get a single Lodge_Registration
+@api_view(['GET'])
+def getPig_LodgeRegistration(request, pk):
+    pig_LodgeRegistration = Pig_LodgeRegistration.objects.get(lodgeRegistrationId=pk)
+    serializer = Pig_LodgeRegistrationSerializer(pig_LodgeRegistration, many=False)
+    return Response(serializer.data)
+
+#Update a single Lodge_Registration
+@api_view(['PUT'])
+def updatePig_LodgeRegistration(request, pk):
+    data = request.data
+    pig_LodgeRegistration = Pig_LodgeRegistration.objects.get(lodgeRegistrationId=pk)
+    serializer = Pig_LodgeRegistrationSerializer(instance=pig_LodgeRegistration, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single Lodge_Registration
+@api_view(['POST'])
+def createPig_LodgeRegistration(request, memberid, lodgeid):
+    data = request.data
+    member = Pig.objects.get(memberId=memberid)
+    lodge =  Lodge.objects.get(lodgeId=lodgeid)
+    pig_LodgeRegistration = Pig_LodgeRegistration.objects.create(
+        pig_name = member,
+        lodge = lodge,
+        enteryDate=data['enteryDate'],
+        enteryReason=data['enteryReason'],
+        weight=data['weight'],
+        isFinSejour=data['isFinSejour'],
+        leavingDate=data['leavingDate'],
+        leavingReason=data['leavingReason']      
+    )
+    serializer = Pig_LodgeRegistrationSerializer(pig_LodgeRegistration, many=False)
+    return Response(serializer.data) 
+
+#delete a single pig_LodgeRegistration
+@api_view(['DELETE'])
+def deletePig_LodgeRegistration(request, pk):
+    pig_LodgeRegistration = Pig_LodgeRegistration.objects.get(lodgeRegistrationId=pk)
+    pig_LodgeRegistration.delete()
+    return Response('Pig_LodgeRegistration was deleted!')
+
