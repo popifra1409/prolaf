@@ -3,7 +3,7 @@ from django.utils import timezone
 from datetime import timedelta
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Building, Lodge, Family, Pig, Parameter,ParamRegistration, Lodge_Registration
+from .models import Building, Lodge, Family, Pig, Parameter,Param_Registration, Lodge_Registration
 from .serializers import BuildingSerializer, LodgeSerializer, FamilySerializer, PigSerializer, ParameterSerializer, ParamRegistrationSerializer, LodgeRegistrationSerializer
 
 
@@ -267,7 +267,7 @@ def getParamRegistrations(request):
 
 #get a single ParamRegistration
 @api_view(['GET'])
-def geParamRegistration(request, pk):
+def getParamRegistration(request, pk):
     paramRegistration = ParamRegistration.objects.get(paramRegistrationId=pk)
     serializer = ParamRegistrationSerializer(paramRegistration, many=False)
     return Response(serializer.data)

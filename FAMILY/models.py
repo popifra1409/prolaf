@@ -79,6 +79,14 @@ class Member(models.Model):
     def __str__(self):
         return str(self.member_name)
 
+    def save(self, *args, **kwargs): 
+        if self.mother:
+            #get member corresponding to the mother
+            member = Pig.objects.get(memberId=self.mother.memberId)
+            self.generation = member.generation + 1
+        super(Pig, self).save(*args, **kwargs)
+
+
     class Meta:
         abstract = True
 
@@ -89,19 +97,15 @@ class Pig(Member):
             
 
     def save(self, *args, **kwargs): 
-
-        if self.mother:
-            #get member corresponding to the mother
-            member = Pig.objects.get(memberId=self.mother.memberId)
-            self.generation = member.generation + 1
-
         birthdate = datetime.datetime.strptime(self.birthdate,'%Y-%m-%d')
         self.post_weaning = make_aware(birthdate + timedelta(days=30))
         self.pre_magnification = make_aware(birthdate + timedelta(days=60))
         self.magnification = make_aware(birthdate + timedelta(days=90))
         super(Pig, self).save(*args, **kwargs)
-        
-     
+
+class Fowl(Member):
+    colour = models.CharField(max_length=150, blank=False, null=False)
+         
 
 
 #Parameter Model
@@ -120,16 +124,15 @@ class Parameter(models.Model):
  #Parameter Registration Model
 class Param_Registration(models.Model):
     paramRegistrationId =  models.UUIDField(
-        primary_key=True, unique=True, editable=False, default=uuid.uuid4)          
+        primary_key=True, unique=True, editable=False, default=uuid.uuid4)   
     parameter = models.ForeignKey(
-        Parameter, blank=False, null=False, on_delete=models.CASCADE)               
+        Parameter, blank=False, null=False, on_delete=models.CASCADE)                
     value = models.CharField(max_length=20,  blank= False, null= False)
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True) 
         
     def __str__(self):
-        return str(self.pig_name)
-
+        return str(self.pig_name)  
 
 
 
