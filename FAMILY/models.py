@@ -84,7 +84,7 @@ class Member(models.Model):
             #get member corresponding to the mother
             member = Pig.objects.get(memberId=self.mother.memberId)
             self.generation = member.generation + 1
-        super(Pig, self).save(*args, **kwargs)
+        super(Member, self).save(*args, **kwargs)
 
 
     class Meta:
@@ -105,7 +105,12 @@ class Pig(Member):
 
 class Fowl(Member):
     colour = models.CharField(max_length=150, blank=False, null=False)
-         
+
+def get_member_choices():
+    pigs = Pig.objects.all() # fetch data from Model1
+    fowls = Fowl.objects.all() # fetch data from Model2
+    combined_list = [(item.member_name) for item in pigs] + [(item.member_name) for item in fowls] # combine the data into a list to be used as choices
+    return combined_list     
 
 
 #Parameter Model
@@ -123,8 +128,15 @@ class Parameter(models.Model):
 
  #Parameter Registration Model
 class Param_Registration(models.Model):
+    MEMBER_TYPE = (('pig', 'Pig'), ('fowl',
+                      'Fowl'))    
     paramRegistrationId =  models.UUIDField(
-        primary_key=True, unique=True, editable=False, default=uuid.uuid4)   
+        primary_key=True, unique=True, editable=False, default=uuid.uuid4) 
+    member_choice = models.CharField(
+        max_length=20, blank=True, null=True, choices= MEMBER_TYPE, default='Pig')    
+    MEMBER_CHOICE = get_member_choices() 
+    member = models.CharField(
+        max_length=20, blank=True, null=True, choices= MEMBER_CHOICE, default='Pig')       
     parameter = models.ForeignKey(
         Parameter, blank=False, null=False, on_delete=models.CASCADE)                
     value = models.CharField(max_length=20,  blank= False, null= False)
@@ -132,7 +144,13 @@ class Param_Registration(models.Model):
     updateDate = models.DateTimeField(auto_now=True) 
         
     def __str__(self):
-        return str(self.pig_name)  
+        return str(self.pig_name) 
+
+    def save(self, *args, **kwargs): 
+        if self.member_type == Pig:
+            self.member = models.ForeignKey(
+                Pig, blank=True, null=True, on_delete=models.SET_NULL)
+        super(Pig, self).save(*args, **kwargs)       
 
 
 
