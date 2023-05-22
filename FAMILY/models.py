@@ -186,8 +186,7 @@ class Lodge_Registration(models.Model):
 
         super(Lodge_Registration, self).save(*args, **kwargs)
 
-
     def __str__(self):
-        return str(self.pig_name)
+        return str(self.lodgeRegistrationId)
         
 
