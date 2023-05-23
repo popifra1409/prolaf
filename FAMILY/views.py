@@ -3,8 +3,8 @@ from django.utils import timezone
 from datetime import timedelta
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Building, Lodge, Family, Pig, Parameter,Param_Registration, Lodge_Registration
-from .serializers import BuildingSerializer, LodgeSerializer, FamilySerializer, PigSerializer, ParameterSerializer, ParamRegistrationSerializer, LodgeRegistrationSerializer
+from .models import Building, Lodge, Family, Pig, Fowl, Parameter, Param_Registration, Lodge_Registration
+from .serializers import BuildingSerializer, LodgeSerializer, FamilySerializer, PigSerializer,FowlSerializer, ParameterSerializer, ParamRegistrationSerializer, LodgeRegistrationSerializer
 
 
 # ============== Building management ====================
@@ -209,6 +209,86 @@ def deletePig(request, pk):
     pig.delete()
     return Response('Pig was deleted!')
 
+#post_weaning alert
+@api_view(['GET'])
+def is_near_post_weaning(request): 
+    now = timezone.now().date()
+    members = Member.objects.filter(post_weaning__gt=now, post_weaning__lte=now+timedelta(days=7))
+    serializer = PigSerializer(members, many=True)
+    return Response(serializer.data)
+
+#pre_magnification alert
+@api_view(['GET'])
+def is_near_pre_magnification(request):
+    now = timezone.now().date()
+    members = Member.objects.filter(pre_magnification__gt=now, pre_magnification__lte=now+timedelta(days=7)) #lte=less than or equal to
+    serializer = PigSerializer(members, many=True)
+    return Response(serializer.data)
+
+ #magnification alert
+@api_view(['GET'])
+def is_near_magnification(request):
+    now = timezone.now().date()
+    members = Member.objects.filter(magnification__gt=now, magnification__lte=now+timedelta(days=7))
+    serializer = PigSerializer(members, many=True)
+    return Response(serializer.data)  
+
+
+# ============== Fowls management ====================
+# get all fowls
+@api_view(['GET'])
+def getFowls(request):
+    fowls = Fowl.objects.all()
+    serializer = FowlSerializer(fowls, many=True)
+    return Response(serializer.data)
+
+#get a single fowl
+@api_view(['GET'])
+def getFowl(request, pk):
+    fowl = Fowl.objects.get(memberId=pk)
+    serializer = FowlSerializer(fowl, many=False)
+    return Response(serializer.data)
+
+#Update a single fowl
+@api_view(['PUT'])
+def updateFowl(request, pk):
+    data = request.data
+    fowl = Fowl.objects.get(memberId=pk)
+    serializer = FowlSerializer(instance=fowl, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single fowl
+@api_view(['POST'])
+def createFowl(request, familyid, lodgeid, motherid, fatherid):
+    data = request.data
+    family = Family.objects.get(familyId=familyid)
+    lodge = Lodge.objects.get(lodgeId=lodgeid)
+    mother = Fowl.objects.get(memberId=motherid)
+    father = Fowl.objects.get(memberId=fatherid)
+    fowl = Fowl.objects.create(
+        member_name=data['member_name'],
+        family= family,
+        lodge= lodge,
+        birthdate=data['birthdate'],
+        mother=mother,
+        father=father,
+        gender=data['gender'],
+        colour=data['colour']        
+    )
+    serializer = FowlSerializer(fowl, many=False)
+    return Response(serializer.data) 
+
+#delete a single fowl
+@api_view(['DELETE'])
+def deleteFowl(request, pk):
+    fowl = Fowl.objects.get(memberId=pk)
+    fowl.delete()
+    return Response('Fowl was deleted!')      
+
 
 # ============== Parameter management ====================
 # get all parameters
@@ -237,7 +317,7 @@ def updateParameter(request, pk):
 
     return Response(serializer.data) 
 
-#create a single member
+#create a single parameter
 @api_view(['POST'])
 def createParameter(request):
     data = request.data
@@ -286,12 +366,11 @@ def updateParamRegistration(request, pk):
 
 #create a single ParamRegistration
 @api_view(['POST'])
-def createParamRegistration(request, memberid, nameid):
+def createParamRegistration(request, nameid):
     data = request.data
-    member = Pig.objects.get(memberId=memberid)
     parameter = Parameter.objects.get(parameterId=nameid)
     param_Registration = ParamRegistration.objects.create(
-        pig_name = member,
+        member = ['member'],
         parameter = parameter,
         value=data['value']     
     )
@@ -304,31 +383,6 @@ def deleteParamRegistration(request, pk):
     paramRegistration = ParamRegistration.objects.get(paramRegistrationId=pk)
     paramRegistration.delete()
     return Response('ParamRegistration was deleted!')
-
-
-#post_weaning alert
-@api_view(['GET'])
-def is_near_post_weaning(request): 
-    now = timezone.now().date()
-    members = Member.objects.filter(post_weaning__gt=now, post_weaning__lte=now+timedelta(days=7))
-    serializer = MemberSerializer(members, many=True)
-    return Response(serializer.data)
-
-#pre_magnification alert
-@api_view(['GET'])
-def is_near_pre_magnification(request):
-    now = timezone.now().date()
-    members = Member.objects.filter(pre_magnification__gt=now, pre_magnification__lte=now+timedelta(days=7)) #lte=less than or equal to
-    serializer = MemberSerializer(members, many=True)
-    return Response(serializer.data)
-
- #magnification alert
-@api_view(['GET'])
-def is_near_magnification(request):
-    now = timezone.now().date()
-    members = Member.objects.filter(magnification__gt=now, magnification__lte=now+timedelta(days=7))
-    serializer = MemberSerializer(members, many=True)
-    return Response(serializer.data) 
 
 
     # ============== Lodge_Registration management ====================
@@ -383,4 +437,19 @@ def deleteLodge_Registration(request, pk):
     lodge_Registration = Lodge_Registration.objects.get(lodgeRegistrationId=pk)
     lodge_Registration.delete()
     return Response('Lodge_Registration was deleted!')
+
+
+#Thsi function is to test what the function gives as output
+@api_view(['GET'])
+def update_choices(cls):
+    pigs = Pig.objects.all() # fetch data from pig
+    fowls = Fowl.objects.all() # fetch data from fowl
+    combined_list = []
+    for row in pigs:
+        combined_list.append((row.memberId, row.member_name)) # Add fields from pigs to the combined list
+                
+    for row in fowls:
+        combined_list.append((row.memberId, row.member_name)) # Add fields from fowls to the combined list   
+    return Response(cls.data)
+
 

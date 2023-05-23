@@ -79,13 +79,6 @@ class Member(models.Model):
     def __str__(self):
         return str(self.member_name)
 
-    def save(self, *args, **kwargs): 
-        if self.mother:
-            #get member corresponding to the mother
-            member = Pig.objects.get(memberId=self.mother.memberId)
-            self.generation = member.generation + 1
-        super(Member, self).save(*args, **kwargs)
-
 
     class Meta:
         abstract = True
@@ -97,6 +90,12 @@ class Pig(Member):
             
 
     def save(self, *args, **kwargs): 
+
+        if self.mother:
+            #get member corresponding to the mother
+            member = Pig.objects.get(memberId=self.mother.memberId)
+            self.generation = member.generation + 1
+
         birthdate = datetime.datetime.strptime(self.birthdate,'%Y-%m-%d')
         self.post_weaning = make_aware(birthdate + timedelta(days=30))
         self.pre_magnification = make_aware(birthdate + timedelta(days=60))
@@ -106,11 +105,12 @@ class Pig(Member):
 class Fowl(Member):
     colour = models.CharField(max_length=150, blank=False, null=False)
 
-def get_member_choices():
-    pigs = Pig.objects.all() # fetch data from Model1
-    fowls = Fowl.objects.all() # fetch data from Model2
-    combined_list = [(item.member_name) for item in pigs] + [(item.member_name) for item in fowls] # combine the data into a list to be used as choices
-    return combined_list     
+    def save(self, *args, **kwargs): 
+        if self.mother:
+            #get member corresponding to the mother
+            member = Fowl.objects.get(memberId=self.mother.memberId)
+            self.generation = member.generation + 1
+        super(Member, self).save(*args, **kwargs)     
 
 
 #Parameter Model
@@ -133,10 +133,9 @@ class Param_Registration(models.Model):
     paramRegistrationId =  models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4) 
     member_choice = models.CharField(
-        max_length=20, blank=True, null=True, choices= MEMBER_TYPE, default='Pig')    
-    MEMBER_CHOICE = get_member_choices() 
+        max_length=20, blank=True, null=True, choices= MEMBER_TYPE, default='Pig')     
     member = models.CharField(
-        max_length=20, blank=True, null=True, choices= MEMBER_CHOICE, default='Pig')       
+        max_length=20, blank=True, null=True, choices=[])       
     parameter = models.ForeignKey(
         Parameter, blank=False, null=False, on_delete=models.CASCADE)                
     value = models.CharField(max_length=20,  blank= False, null= False)
@@ -146,11 +145,22 @@ class Param_Registration(models.Model):
     def __str__(self):
         return str(self.pig_name) 
 
-    def save(self, *args, **kwargs): 
-        if self.member_type == Pig:
-            self.member = models.ForeignKey(
-                Pig, blank=True, null=True, on_delete=models.SET_NULL)
-        super(Pig, self).save(*args, **kwargs)       
+        @classmethod
+        def update_choices(cls):
+            pigs = Pig.objects.all() # fetch data from pig
+            fowls = Fowl.objects.all() # fetch data from fowl
+            combined_list = []
+            for row in pigs:
+                combined_list.append((row.memberId, row.member_name))  # Add fields from pigs to the combined list
+                
+            for row in fowls:
+                combined_list.append((row.memberId, row.member_name))  # Add fields from fowls to the combined list
+
+            cls._meta.get_field('member').choices = combined_list   
+
+        def save(self, *args, **kwargs):
+            self.member = self.update_choices()
+        super(Param_Registration, self).save(*args, **kwargs)
 
 
 
@@ -174,19 +184,16 @@ class Lodge_Registration(models.Model):
         return str(self.lodge) 
 
     def save(self, *args, **kwargs):
-        #This works for the Django admin but not for the API
+        #This works when adding through Django admin but not for the API
         now = timezone.now().date()
         self.duration = (now - self.enteryDate).days
         
-        #This works for the API but not for the django admin
+        #This works when adding through the API but not for the django admin
         #newentery = self.enteryDate.strftime('%m/%d/%Y')
         enteryDate = datetime.datetime.strptime(self.enteryDate,'%Y-%m-%d')
         now = datetime.datetime.today()
         self.duration = (now - enteryDate).days
 
         super(Lodge_Registration, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return str(self.lodgeRegistrationId)
         
 

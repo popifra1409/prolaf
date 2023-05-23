@@ -26,7 +26,7 @@ urlpatterns = [
     path('families/<str:pk>/',views.getFamily, name="family"),
 
 
-#Member urls
+#Pig urls
     path('pigs/',views.getPigs, name="pigs"),
     path('pigs/<str:pk>/update/',views.updatePig, name="update-Pig"),
     path('pigs/<str:pk>/delete/',views.deletePig, name="delete-Pig"),
@@ -36,6 +36,13 @@ urlpatterns = [
     path('pigs_pre_magnification/',views.is_near_pre_magnification, name="pre_magnification"),
     path('pigs_magnification/',views.is_near_magnification, name="magnification"),
 
+#Fowl urls
+    path('fowls/',views.getFowls, name="fowls"),
+    path('fowls/<str:pk>/update/',views.updateFowl, name="update-fowl"),
+    path('fowls/<str:pk>/delete/',views.deleteFowl, name="delete-fowl"),
+    path('fowls/<str:familyid>/<str:lodgeid>/<str:motherid>/<str:fatherid>/create/',views.createFowl, name="create-fowl"),
+    path('fowls/<str:pk>/',views.getFowl, name="fowl"),
+    
 
 #Parameter urls
     path('parameters/',views.getParameters, name="parameters"),
@@ -49,7 +56,7 @@ urlpatterns = [
     path('paramRegistrations/',views.getParamRegistrations, name="pig_ParamRegistrations"),
     path('paramRegistrations/<str:pk>/update/',views.updateParamRegistration, name="update-paramRegistration"),
     path('paramRegistrations/<str:pk>/delete/',views.deleteParamRegistration, name="delete-paramRegistration"),
-    path('paramRegistrations/<str:memberid>/<str:nameid>/create/',views.createParamRegistration, name="create-paramRegistration"),
+    path('paramRegistrations/<str:nameid>/create/',views.createParamRegistration, name="create-paramRegistration"),
     path('paramRegistrations/<str:pk>/',views.getParamRegistration, name="paramRegistration"),
 
 
