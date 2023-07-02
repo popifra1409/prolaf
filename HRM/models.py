@@ -115,6 +115,9 @@ class Document(models.Model):
 class Agent(models.Model):
     agentId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
+    AGENT_CHOICES = (('supplier', 'Supplier'), ('client', 'Client'))
+    agenttype = models.CharField(
+        max_length=255, blank=True, null=True, choices= AGENT_CHOICES)    
     firstname = models.CharField(max_length=255, blank=True, null=True)
     lastname = models.CharField(max_length=255, blank=True, null=True)
     address = models.CharField(max_length=255, blank=True, null=True)
@@ -130,14 +133,14 @@ class Agent(models.Model):
     def __str__(self):
         return str(self.firstname)
     
-    class Meta:
+    """ class Meta:
         abstract = True
 
 class Client(Agent):
     pass
 
 class Supplier(Agent):
-    pass 
+    pass  """
 
 class Contract(models.Model):
     contractId = models.UUIDField(
@@ -164,14 +167,12 @@ class Internal(Contract):
 
 class External(Contract):
     AGENT_CHOICES = (('supplier', 'Supplier'), ('client', 'Client'))
-    agent = models.CharField(
+    agenttype = models.CharField(
         max_length=255, blank=True, null=True, choices= AGENT_CHOICES)
 
-    client = models.OneToOneField(
-    Client, blank=True, null=True, on_delete=models.CASCADE)
-
-    Supplier = models.OneToOneField(
-    Supplier, blank=True, null=True, on_delete=models.CASCADE)   
+    agentname = models.OneToOneField(
+    Agent, blank=True, null=True, on_delete=models.CASCADE)
+   
 
                     
     

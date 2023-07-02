@@ -346,7 +346,7 @@ def getParamRegistrations(request):
     return Response(serializer.data)
 
 #get a single ParamRegistration
-@api_view(['GET'])
+@api_view(['GET']) 
 def getParamRegistration(request, pk):
     paramRegistration = ParamRegistration.objects.get(paramRegistrationId=pk)
     serializer = ParamRegistrationSerializer(paramRegistration, many=False)

@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Department, Employee, Document, Internal, External, Client, Supplier
-from .serializers import DepartmentSerializer, EmployeeSerializer, DocumentSerializer, InternalSerializer, ExternalSerializer, ClientSerializer, SupplierSerializer
+from .models import Department, Employee, Document, Internal, External, Agent
+from .serializers import DepartmentSerializer, EmployeeSerializer, DocumentSerializer, InternalSerializer, ExternalSerializer, AgentSerializer
 
 
 # ============== Departement management ====================
@@ -280,7 +280,62 @@ def deleteExternal(request, pk):
     return Response('External Contract was deleted!')
 
 
-# ============== Client management ==================== 
+# ============== Agent management ==================== 
+# get all agents
+@api_view(['GET'])
+def getAgents(request):
+    agents = Agent.objects.all()
+    serializer = AgentSerializer(agents, many=True)
+    return Response(serializer.data)
+
+#get a single agent
+@api_view(['GET'])
+def getAgent(request, pk):
+    agent = Agent.objects.get(agentId=pk)
+    serializer = AgentSerializer(agent, many=False)
+    return Response(serializer.data)     
+
+#Update a single agent
+@api_view(['PUT'])
+def updateAgent(request, pk):
+    data = request.data
+    agent = Agent.objects.get(agentId=pk)
+    serializer = AgentSerializer(instance=agent, data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data) 
+
+#create a single agent
+@api_view(['POST'])
+def createAgent(request):
+    data = request.data
+    agent = Agent.objects.create(
+        agenttype=data['agenttype'],
+        firstname=data['firstname'],
+        lastname=data['lastname'],
+        address=data['address'],
+        phone=data['phone'],
+        email=data['email'],
+        company=data['company'],
+        niu=data['niu'],
+        observation=data['observation'],
+        bankaccount=data['bankaccount']
+
+    )
+    serializer = AgentSerializer(agent, many=False)
+    return Response(serializer.data)  
+
+#delete a single Agent
+@api_view(['DELETE'])
+def deleteAgent(request, pk):
+    agent = Agent.objects.get(agentId=pk)
+    agent.delete()
+    return Response('Agent was deleted!')      
+
+
+""" # ============== Client management ==================== 
 # get all clients
 @api_view(['GET'])
 def getClients(request):
@@ -385,5 +440,5 @@ def createSupplier(request):
 def deleteSupplier(request, pk):
     supplier = Supplier.objects.get(agentId=pk)
     supplier.delete()
-    return Response('Supplier was deleted!')
+    return Response('Supplier was deleted!') """
 

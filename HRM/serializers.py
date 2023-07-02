@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Client,Supplier, Internal, External,Employee, Department, Document
+from .models import Agent, Internal, External,Employee, Department, Document
 
 class DepartmentSerializer(ModelSerializer):
     class Meta:
@@ -27,7 +27,7 @@ class ExternalSerializer(ModelSerializer):
         model = External
         fields = '__all__' 
 
-class ClientSerializer(ModelSerializer):
+""" class ClientSerializer(ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__' 
@@ -35,9 +35,9 @@ class ClientSerializer(ModelSerializer):
 class SupplierSerializer(ModelSerializer):
     class Meta:
         model = Supplier
-        fields = '__all__'                                     
+        fields = '__all__'      """                                
 
-""" class AgentSerializer(ModelSerializer):
+class AgentSerializer(ModelSerializer):
     class Meta:
         model = Agent
-        fields = '__all__'    """   
+        fields = '__all__'      

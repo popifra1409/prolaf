@@ -40,23 +40,31 @@ urlpatterns = [
     path('externals/<str:pk>/update/',views.updateExternal, name="update-external"),
     path('externals/<str:pk>/delete/',views.deleteExternal, name="delete-external"),
     path('externals/<str:agentid>/create/',views.createExternal, name="create-external"),
-    path('externals/<str:pk>/',views.getExternal, name="external"),    
+    path('externals/<str:pk>/',views.getExternal, name="external"),
+
+
+    #Agent management
+    path('agents/',views.getAgents, name="agents"),
+    path('agents/<str:pk>/update/',views.updateAgent, name="update-agent"),
+    path('agents/<str:pk>/delete/',views.deleteAgent, name="delete-agent"),
+    path('agents/create/',views.createAgent, name="create-agent"),
+    path('agents/<str:pk>/',views.getAgent, name="agent"),        
  
 
- #Client management
-    path('clients/',views.getClients, name="clients"),
-    path('clients/<str:pk>/update/',views.updateClient, name="update-client"),
-    path('clients/<str:pk>/delete/',views.deleteClient, name="delete-client"),
-    path('clients/create/',views.createClient, name="create-client"),
-    path('clients/<str:pk>/',views.getClient, name="client"),    
+#Client management
+    #path('clients/',views.getClients, name="clients"),
+    #path('clients/<str:pk>/update/',views.updateClient, name="update-client"),
+    #path('clients/<str:pk>/delete/',views.deleteClient, name="delete-client"),
+    #path('clients/create/',views.createClient, name="create-client"),
+    #path('clients/<str:pk>/',views.getClient, name="client"),    
  
 
  #Supplier management
-    path('suppliers/',views.getSuppliers, name="suppliers"),
-    path('suppliers/<str:pk>/update/',views.updateSupplier, name="update-supplier"),
-    path('suppliers/<str:pk>/delete/',views.deleteSupplier, name="delete-supplier"),
-    path('suppliers/create/',views.createSupplier, name="create-supplier"),
-    path('suppliers/<str:pk>/',views.getSupplier, name="supplier"),    
+    #path('suppliers/',views.getSuppliers, name="suppliers"),
+    #path('suppliers/<str:pk>/update/',views.updateSupplier, name="update-supplier"),
+    #path('suppliers/<str:pk>/delete/',views.deleteSupplier, name="delete-supplier"),
+    #path('suppliers/create/',views.createSupplier, name="create-supplier"),
+    #path('suppliers/<str:pk>/',views.getSupplier, name="supplier"),  
  
 
 ]

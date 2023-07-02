@@ -139,12 +139,13 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 #giving access to all domains
 ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
 #giving access to only localhost (the domains are consuming the API)
-""" ALLOWED_HOSTS=['http://localhost:5000']
+""" ALLOWED_HOSTS=['http://localhost:3000']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:8000',
