@@ -135,7 +135,7 @@ class Param_Registration(models.Model):
     member_choice = models.CharField(
         max_length=20, blank=True, null=True, choices= MEMBER_TYPE, default='Pig')     
     member = models.CharField(
-        max_length=20, blank=True, null=True, choices=[])       
+        max_length=20, blank=True, null=True)       
     parameter = models.ForeignKey(
         Parameter, blank=False, null=False, on_delete=models.CASCADE)                
     value = models.CharField(max_length=20,  blank= False, null= False)
@@ -143,24 +143,7 @@ class Param_Registration(models.Model):
     updateDate = models.DateTimeField(auto_now=True) 
         
     def __str__(self):
-        return str(self.pig_name) 
-
-        @classmethod
-        def update_choices(cls):
-            pigs = Pig.objects.all() # fetch data from pig
-            fowls = Fowl.objects.all() # fetch data from fowl
-            combined_list = []
-            for row in pigs:
-                combined_list.append((row.memberId, row.member_name))  # Add fields from pigs to the combined list
-                
-            for row in fowls:
-                combined_list.append((row.memberId, row.member_name))  # Add fields from fowls to the combined list
-
-            cls._meta.get_field('member').choices = combined_list   
-
-        def save(self, *args, **kwargs):
-            self.member = self.update_choices()
-        super(Param_Registration, self).save(*args, **kwargs)
+        return str(self.member) 
 
 
 

@@ -1,4 +1,5 @@
 from rest_framework.serializers import ModelSerializer
+from rest_framework import serializers
 from .models import Building, Lodge, Family, Pig, Fowl, Parameter,Param_Registration, Lodge_Registration
 
 class BuildingSerializer(ModelSerializer):
@@ -34,6 +35,8 @@ class ParameterSerializer(ModelSerializer):
         fields = '__all__'                        
 
 class ParamRegistrationSerializer(ModelSerializer):
+    parameter = serializers.SlugRelatedField(slug_field='name', read_only=True)
+
     class Meta:
         model = Param_Registration
         fields = '__all__'

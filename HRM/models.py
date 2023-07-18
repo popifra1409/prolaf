@@ -118,15 +118,15 @@ class Agent(models.Model):
     AGENT_CHOICES = (('supplier', 'Supplier'), ('client', 'Client'))
     agenttype = models.CharField(
         max_length=255, blank=True, null=True, choices= AGENT_CHOICES)    
-    firstname = models.CharField(max_length=255, blank=True, null=True)
+    firstname = models.CharField(max_length=255, blank=False, null=True)
     lastname = models.CharField(max_length=255, blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
-    phone = models.CharField(max_length=255, blank=True, null=True)
+    address = models.CharField(max_length=255, blank=False, null=True)
+    phone = models.CharField(max_length=255, blank=False, null=True)
     email = models.CharField(max_length=255, blank=True, null=True)
     company = models.CharField(max_length=255, blank=True, null=True)
-    niu = models.CharField(max_length=255, blank=True, null=True)
+    niu = models.CharField(max_length=255, blank=False, null=True)
     observation = models.CharField(max_length=255, blank=True, null=True)
-    bankaccount = models.CharField(max_length=255, blank=True, null=True)
+    bankaccount = models.CharField(max_length=255, blank=False, null=True)
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True)
 
@@ -145,12 +145,12 @@ class Supplier(Agent):
 class Contract(models.Model):
     contractId = models.UUIDField(
         primary_key=True, unique=True, editable=False, default=uuid.uuid4)
-    contract_no = models.CharField(max_length=255, blank=True, null=True)
-    dateofcreation = models.DateField(max_length=255, blank=True, null=True)
+    contract_no = models.CharField(max_length=255, blank=False, null=True)
+    dateofcreation = models.DateField(max_length=255, blank=False, null=True)
     duration = models.DateField(max_length=255, blank=True, null=True)
-    formofcontract = models.CharField(max_length=255, blank=True, null=True)
+    formofcontract = models.CharField(max_length=255, blank=False, null=True)
     contractupload = models.FileField(
-        upload_to="", blank=True, null=True)
+        upload_to="", blank=False, null=True)
     createDate = models.DateTimeField(auto_now_add=True)
     updateDate = models.DateTimeField(auto_now=True)
 
@@ -168,10 +168,9 @@ class Internal(Contract):
 class External(Contract):
     AGENT_CHOICES = (('supplier', 'Supplier'), ('client', 'Client'))
     agenttype = models.CharField(
-        max_length=255, blank=True, null=True, choices= AGENT_CHOICES)
-
+        max_length=255, blank=False, null=True, choices= AGENT_CHOICES)
     agentname = models.OneToOneField(
-    Agent, blank=True, null=True, on_delete=models.CASCADE)
+    Agent, blank=False, null=True, on_delete=models.CASCADE)
    
 
                     

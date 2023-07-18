@@ -213,7 +213,7 @@ def deletePig(request, pk):
 @api_view(['GET'])
 def is_near_post_weaning(request): 
     now = timezone.now().date()
-    members = Member.objects.filter(post_weaning__gt=now, post_weaning__lte=now+timedelta(days=7))
+    members = Pig.objects.filter(post_weaning__gt=now, post_weaning__lte=now+timedelta(days=7))
     serializer = PigSerializer(members, many=True)
     return Response(serializer.data)
 
@@ -221,7 +221,7 @@ def is_near_post_weaning(request):
 @api_view(['GET'])
 def is_near_pre_magnification(request):
     now = timezone.now().date()
-    members = Member.objects.filter(pre_magnification__gt=now, pre_magnification__lte=now+timedelta(days=7)) #lte=less than or equal to
+    members = Pig.objects.filter(pre_magnification__gt=now, pre_magnification__lte=now+timedelta(days=7)) #lte=less than or equal to
     serializer = PigSerializer(members, many=True)
     return Response(serializer.data)
 
@@ -229,7 +229,7 @@ def is_near_pre_magnification(request):
 @api_view(['GET'])
 def is_near_magnification(request):
     now = timezone.now().date()
-    members = Member.objects.filter(magnification__gt=now, magnification__lte=now+timedelta(days=7))
+    members = Pig.objects.filter(magnification__gt=now, magnification__lte=now+timedelta(days=7))
     serializer = PigSerializer(members, many=True)
     return Response(serializer.data)  
 
@@ -341,14 +341,14 @@ def deleteParameter(request, pk):
 # get all ParamRegistrations
 @api_view(['GET'])
 def getParamRegistrations(request):
-    paramRegistrations = ParamRegistration.objects.all()
+    paramRegistrations = Param_Registration.objects.all()
     serializer = ParamRegistrationSerializer(paramRegistrations, many=True)
     return Response(serializer.data)
 
 #get a single ParamRegistration
 @api_view(['GET']) 
 def getParamRegistration(request, pk):
-    paramRegistration = ParamRegistration.objects.get(paramRegistrationId=pk)
+    paramRegistration = Param_Registration.objects.get(paramRegistrationId=pk)
     serializer = ParamRegistrationSerializer(paramRegistration, many=False)
     return Response(serializer.data)
 
@@ -356,7 +356,7 @@ def getParamRegistration(request, pk):
 @api_view(['PUT'])
 def updateParamRegistration(request, pk):
     data = request.data
-    paramRegistration = ParamRegistration.objects.get(paramRegistrationId=pk)
+    paramRegistration = Param_Registration.objects.get(paramRegistrationId=pk)
     serializer = ParamRegistrationSerializer(instance=paramRegistration, data=data)
 
     if serializer.is_valid():
@@ -369,8 +369,9 @@ def updateParamRegistration(request, pk):
 def createParamRegistration(request, nameid):
     data = request.data
     parameter = Parameter.objects.get(parameterId=nameid)
-    param_Registration = ParamRegistration.objects.create(
-        member = ['member'],
+    param_Registration = Param_Registration.objects.create(
+        member_choice = data['member_choice'],
+        member = data['member'],
         parameter = parameter,
         value=data['value']     
     )
@@ -380,7 +381,7 @@ def createParamRegistration(request, nameid):
 #delete a single param_Registration
 @api_view(['DELETE'])
 def deleteParamRegistration(request, pk):
-    paramRegistration = ParamRegistration.objects.get(paramRegistrationId=pk)
+    paramRegistration = Param_Registration.objects.get(paramRegistrationId=pk)
     paramRegistration.delete()
     return Response('ParamRegistration was deleted!')
 

@@ -53,7 +53,7 @@ urlpatterns = [
 
 
 #ParamRegistrations urls
-    path('paramRegistrations/',views.getParamRegistrations, name="pig_ParamRegistrations"),
+    path('paramRegistrations/',views.getParamRegistrations, name="ParamRegistrations"),
     path('paramRegistrations/<str:pk>/update/',views.updateParamRegistration, name="update-paramRegistration"),
     path('paramRegistrations/<str:pk>/delete/',views.deleteParamRegistration, name="delete-paramRegistration"),
     path('paramRegistrations/<str:nameid>/create/',views.createParamRegistration, name="create-paramRegistration"),

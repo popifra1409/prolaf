@@ -259,10 +259,11 @@ def updateExternal(request, pk):
 @api_view(['POST'])
 def createExternal(request, agentid):
     data = request.data
-    client = Client.objects.get(agentId=agentid)
+    agent = Agent.objects.get(agentId=agentid)
     external = External.objects.create(
         contract_no=data['contract_no'],
-        agent= agent,
+        agenttype=data['agenttype'],
+        agentname= agent,
         dateofcreation=data['dateofcreation'],
         duration=data['duration'],
         formofcontract=data['formofcontract'],
